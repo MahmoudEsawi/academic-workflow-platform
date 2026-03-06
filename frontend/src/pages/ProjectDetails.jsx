@@ -19,8 +19,8 @@ const ProjectDetails = () => {
                 const headers = { Authorization: `Bearer ${token}` };
 
                 const [projectRes, tasksRes] = await Promise.all([
-                    axios.get(`http://localhost:5000/api/projects/${id}`, { headers }),
-                    axios.get(`http://localhost:5000/api/tasks/project/${id}`, { headers })
+                    axios.get(`http://localhost:5001/api/projects/${id}`, { headers }),
+                    axios.get(`http://localhost:5001/api/tasks/project/${id}`, { headers })
                 ]);
 
                 dispatch(setCurrentProject(projectRes.data));
@@ -55,7 +55,7 @@ const ProjectDetails = () => {
     const handleStatusChange = async (newStatus) => {
         try {
             const token = localStorage.getItem('token');
-            await axios.put(`http://localhost:5000/api/projects/${id}/status`, { status: newStatus }, {
+            await axios.put(`http://localhost:5001/api/projects/${id}/status`, { status: newStatus }, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             // Will be updated via socket
@@ -79,16 +79,26 @@ const ProjectDetails = () => {
                             {currentProject.status}
                         </span>
                         {(user.role === 'Supervisor' || user.role === 'Admin') && (
-                            <select
-                                className="ml-4 p-1 rounded border border-gray-300 text-sm"
-                                value={currentProject.status}
-                                onChange={(e) => handleStatusChange(e.target.value)}
-                            >
-                                <option value="Pending">Pending</option>
-                                <option value="Approved">Approved</option>
-                                <option value="Rejected">Rejected</option>
-                                <option value="Edits Requested">Edits Requested</option>
-                            </select>
+                            <div className="ml-4 flex gap-2">
+                                <button
+                                    onClick={() => handleStatusChange('Approved')}
+                                    className="px-3 py-1.5 bg-green-600 text-white text-sm font-medium rounded-md hover:bg-green-700 transition-colors"
+                                >
+                                    Approve
+                                </button>
+                                <button
+                                    onClick={() => handleStatusChange('Rejected')}
+                                    className="px-3 py-1.5 bg-red-600 text-white text-sm font-medium rounded-md hover:bg-red-700 transition-colors"
+                                >
+                                    Reject
+                                </button>
+                                <button
+                                    onClick={() => handleStatusChange('Edits Requested')}
+                                    className="px-3 py-1.5 bg-yellow-500 text-white text-sm font-medium rounded-md hover:bg-yellow-600 transition-colors"
+                                >
+                                    Request Edits
+                                </button>
+                            </div>
                         )}
                     </div>
                 </div>

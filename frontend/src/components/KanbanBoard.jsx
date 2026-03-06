@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { useDispatch, useSelector } from 'react-redux';
 import { updateTaskInStore } from '../redux/projectSlice';
-import socket from '../socket';
+import { Link } from 'react-router-dom';
+import { ArrowUpRight } from 'lucide-react';
 import axios from 'axios';
 
 const COLUMNS = ['To Do', 'In Progress', 'Review', 'Done'];
@@ -53,7 +54,7 @@ const KanbanBoard = ({ projectId, tasks }) => {
         try {
             const token = localStorage.getItem('token');
             await axios.put(
-                `http://localhost:5000/api/tasks/${movedTask._id}`,
+                `http://localhost:5001/api/tasks/${movedTask._id}`,
                 { status: movedTask.status, position: movedTask.position },
                 { headers: { Authorization: `Bearer ${token}` } }
             );
@@ -93,11 +94,30 @@ const KanbanBoard = ({ projectId, tasks }) => {
                                                             {task.description}
                                                         </p>
                                                     )}
-                                                    {task.assignedTo && (
-                                                        <div className="mt-3 text-xs bg-indigo-100 text-indigo-800 px-2 py-1 rounded inline-block">
-                                                            {task.assignedTo?.name || 'Assigned'}
-                                                        </div>
-                                                    )}
+                                                    <div className="mt-4 flex items-center justify-between">
+                                                        {task.assignedTo ? (
+                                                            <div className="text-xs bg-indigo-100 text-indigo-800 px-2 py-1 rounded inline-block">
+                                                                {task.assignedTo?.name || 'Assigned'}
+                                                            </div>
+                                                        ) : <div />}
+
+                                                        {user?.role === 'Student' && (
+                                                            <Link
+                                                                to={`/workspace/${task._id}`}
+                                                                className="text-xs font-semibold text-indigo-600 hover:text-indigo-800 flex items-center gap-1 bg-indigo-50 px-2 py-1 rounded hover:bg-indigo-100 transition-colors"
+                                                            >
+                                                                Workspace <ArrowUpRight size={14} />
+                                                            </Link>
+                                                        )}
+                                                        {(user?.role === 'Supervisor' || user?.role === 'Admin') && (
+                                                            <Link
+                                                                to={`/review/${task._id}`}
+                                                                className="text-xs font-semibold text-emerald-600 hover:text-emerald-800 flex items-center gap-1 bg-emerald-50 px-2 py-1 rounded hover:bg-emerald-100 transition-colors"
+                                                            >
+                                                                Review Work <ArrowUpRight size={14} />
+                                                            </Link>
+                                                        )}
+                                                    </div>
                                                 </div>
                                             )}
                                         </Draggable>

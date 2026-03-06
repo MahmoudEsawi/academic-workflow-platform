@@ -10,7 +10,10 @@
 ## ✨ Key Features
 
 - 🔐 **Role-Based Access Control (RBAC):** Distinct dashboards and capabilities for Admins, Supervisors, and Students.
+- 🤝 **Supervisor Linking System:** Students can browse and request linkages with available Doctors, while Supervisors manage incoming requests from their dashboards.
 - 📋 **Real-Time Kanban Boards:** Drag-and-drop project task management synced instantly across all users using `Socket.io` and `react-beautiful-dnd`.
+- 💻 **Advanced Code Submission Portal:** Students can submit task deliverables via multiple formats, including an embedded source code editor with `react-syntax-highlighter`.
+- 👩‍🏫 **Interactive Review Workflows:** Doctors can step through versioned student submissions, review code formatting, and assign `Approved`, `Needs Revision`, or `Rejected` statuses.
 - 📁 **Document & File Management:** Upload, store, and manage project deliverables securely with `Multer`.
 - ⚡ **Modern & Responsive UI:** Built with React, Tailwind CSS v4, and Lucide Icons for a beautiful and accessible user experience.
 - 🔄 **State Management:** Predictable global state handling using Redux Toolkit.

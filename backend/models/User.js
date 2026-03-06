@@ -20,6 +20,18 @@ const userSchema = new mongoose.Schema(
       enum: ['Student', 'Supervisor', 'Admin'],
       required: true,
     },
+    // For students: their approved supervisor
+    supervisor: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+    },
+    // For supervisors: their assigned students
+    students: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+      }
+    ]
   },
   { timestamps: true }
 );

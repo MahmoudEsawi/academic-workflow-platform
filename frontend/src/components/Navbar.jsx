@@ -2,9 +2,9 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../redux/authSlice';
 import { useNavigate, Link } from 'react-router-dom';
-import { LogOut, User as UserIcon } from 'lucide-react';
+import { LogOut, User as UserIcon, Menu } from 'lucide-react';
 
-const Navbar = () => {
+const Navbar = ({ onMenuClick }) => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const { user } = useSelector((state) => state.auth);
@@ -20,7 +20,13 @@ const Navbar = () => {
         <nav className="bg-indigo-600 shadow-md">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between h-16">
-                    <div className="flex">
+                    <div className="flex items-center">
+                        <button
+                            onClick={onMenuClick}
+                            className="mr-2 md:hidden p-2 rounded-md text-indigo-100 hover:text-white hover:bg-indigo-500 transition-colors"
+                        >
+                            <Menu size={24} />
+                        </button>
                         <div className="flex-shrink-0 flex items-center">
                             <Link to="/" className="text-white font-bold text-xl tracking-tight">
                                 Academic Workflow
