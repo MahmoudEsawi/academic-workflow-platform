@@ -1,28 +1,102 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { Layers, CheckCircle, Clock } from 'lucide-react';
+import { Layers, CheckCircle, Clock, UsersRound, Plus, LogIn } from 'lucide-react';
+import axios from 'axios';
 
 const StudentWidgets = () => {
+    const { user } = useSelector((state) => state.auth);
     const { projects } = useSelector((state) => state.project);
     const myProject = projects[0]; // Assuming student has 1 active project
 
+    const [availableTeams, setAvailableTeams] = useState([]);
+    const [loadingAction, setLoadingAction] = useState(null);
+
+    // Fetch available teams if student is not in one
+    useEffect(() => {
+        if (!myProject) {
+            const fetchAvailableTeams = async () => {
+                try {
+                    const { data } = await axios.get('http://localhost:5001/api/projects/available');
+                    
+                    // Filter out projects where the student is already pending to avoid showing them as "Join"
+                    const joinable = data.filter(p => !p.pendingStudents?.some(s => s._id === user._id || s === user._id));
+                    setAvailableTeams(joinable);
+                } catch (error) {
+                    console.error('Failed to fetch available teams', error);
+                }
+            };
+            fetchAvailableTeams();
+        }
+    }, [myProject, user._id]);
+
+    const handleJoinTeam = async (projectId) => {
+        setLoadingAction(projectId);
+        try {
+            await axios.post(`http://localhost:5001/api/projects/${projectId}/join`, {});
+            // Give instant feedback by removing it from the list locally
+            setAvailableTeams(prev => prev.filter(p => p._id !== projectId));
+            alert('Request to join team sent! Waiting for Supervisor approval.');
+        } catch (error) {
+            alert(error.response?.data?.message || 'Failed to send join request');
+        } finally {
+            setLoadingAction(null);
+        }
+    };
+
     if (!myProject) {
         return (
-            <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 text-center flex flex-col items-center justify-center min-h-[300px]">
-                <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mb-4 text-slate-400">
-                    <Layers size={32} />
+            <div className="space-y-6">
+                <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-200">
+                    <div className="flex items-center gap-3 mb-6">
+                        <div className="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center">
+                            <Layers size={24} />
+                        </div>
+                        <div>
+                            <h3 className="text-xl font-bold text-slate-800">You don't have an active team yet.</h3>
+                            <p className="text-slate-500 text-sm mt-1">
+                                Create a brand new project, or request to join an existing one supervised by {user.supervisor?.name || 'your assigned doctor'}.
+                            </p>
+                        </div>
+                    </div>
+
+                    <Link
+                        to="/dashboard/submit"
+                        className="inline-flex w-full md:w-auto items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-3 px-6 rounded-lg transition-all shadow-sm shadow-indigo-200 mb-8"
+                    >
+                        <Plus size={18} />
+                        Submit New Proposal
+                    </Link>
+
+                    {availableTeams.length > 0 && (
+                        <div>
+                            <h4 className="font-semibold text-slate-700 mb-4 flex items-center gap-2">
+                                <UsersRound size={18} className="text-emerald-500" />
+                                Available Teams to Join
+                            </h4>
+                            <div className="grid gap-4 md:grid-cols-2">
+                                {availableTeams.map(team => (
+                                    <div key={team._id} className="border border-slate-200 p-5 rounded-xl flex flex-col justify-between hover:border-indigo-300 transition-colors">
+                                        <div>
+                                            <h5 className="font-bold text-slate-900">{team.title}</h5>
+                                            <p className="text-sm text-slate-500 mt-1 line-clamp-2">{team.description}</p>
+                                            <p className="text-xs text-slate-400 mt-3 font-medium">
+                                                {team.students?.length || 0} Members
+                                            </p>
+                                        </div>
+                                        <button
+                                            onClick={() => handleJoinTeam(team._id)}
+                                            disabled={loadingAction === team._id}
+                                            className="mt-4 flex items-center justify-center gap-2 w-full py-2 bg-slate-50 hover:bg-slate-100 text-slate-700 font-medium rounded-lg transition-colors border border-slate-200 disabled:opacity-50"
+                                        >
+                                            {loadingAction === team._id ? 'Sending...' : <><LogIn size={16} /> Request to Join</>}
+                                        </button>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
                 </div>
-                <h3 className="text-xl font-bold text-slate-800 mb-2">No Active Project Yet</h3>
-                <p className="text-slate-500 mb-6 max-w-sm">
-                    You haven't submitted a project proposal yet. Start your academic journey by creating one.
-                </p>
-                <Link
-                    to="/dashboard/submit"
-                    className="bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2.5 px-6 rounded-lg transition-all shadow-sm shadow-indigo-200"
-                >
-                    Submit Proposal
-                </Link>
             </div>
         );
     }

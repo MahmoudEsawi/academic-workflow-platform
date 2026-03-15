@@ -3,13 +3,43 @@ import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../redux/authSlice';
 import { useNavigate, Link } from 'react-router-dom';
 import { LogOut, User as UserIcon, Menu } from 'lucide-react';
+import socket from '../socket';
+import axios from 'axios';
 
 const Navbar = ({ onMenuClick }) => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const { user } = useSelector((state) => state.auth);
 
-    const handleLogout = () => {
+    // Connect socket and join user room when user is loaded
+    React.useEffect(() => {
+        if (user && user._id) {
+            // First connect if not already connected
+            if (!socket.connected) {
+                socket.connect();
+            }
+            
+            // Wait for socket to be actually connected before emitting (or if already connected, emit immediately)
+            if (socket.connected) {
+                socket.emit('joinUserRoom', user._id);
+            } else {
+                socket.once('connect', () => {
+                    socket.emit('joinUserRoom', user._id);
+                });
+            }
+        }
+    }, [user]);
+
+    const handleLogout = async () => {
+        if (socket.connected) {
+            socket.disconnect();
+        }
+        try {
+            // Destroy cookie on backend
+            await axios.post(import.meta.env.MODE === 'production' ? '/api/auth/logout' : 'http://localhost:5001/api/auth/logout');
+        } catch (error) {
+            console.error('Logout failed on backend:', error);
+        }
         dispatch(logout());
         navigate('/login');
     };

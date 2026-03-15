@@ -1,8 +1,10 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { setCurrentProject, setTasks, updateTaskInStore, updateProjectStatusInStore } from '../redux/projectSlice';
+import { setCurrentProject, setTasks, updateTaskInStore, updateProjectStatusInStore, updateProjectInStore } from '../redux/projectSlice';
 import KanbanBoard from '../components/KanbanBoard';
+import ChatPanel from '../components/ChatPanel';
+import { MessageCircle } from 'lucide-react';
 import axios from 'axios';
 import socket from '../socket';
 
@@ -11,16 +13,15 @@ const ProjectDetails = () => {
     const dispatch = useDispatch();
     const { currentProject, tasks } = useSelector((state) => state.project);
     const { user } = useSelector((state) => state.auth);
+    const [isChatOpen, setIsChatOpen] = useState(false);
+    const [actionLoading, setActionLoading] = useState(null);
 
     useEffect(() => {
         const fetchProjectAndTasks = async () => {
             try {
-                const token = localStorage.getItem('token');
-                const headers = { Authorization: `Bearer ${token}` };
-
                 const [projectRes, tasksRes] = await Promise.all([
-                    axios.get(`http://localhost:5001/api/projects/${id}`, { headers }),
-                    axios.get(`http://localhost:5001/api/tasks/project/${id}`, { headers })
+                    axios.get(`http://localhost:5001/api/projects/${id}`),
+                    axios.get(`http://localhost:5001/api/tasks/project/${id}`)
                 ]);
 
                 dispatch(setCurrentProject(projectRes.data));
@@ -43,7 +44,7 @@ const ProjectDetails = () => {
         });
 
         socket.on(`project-${id}-updated`, (project) => {
-            dispatch(updateProjectStatusInStore(project));
+            dispatch(updateProjectInStore(project));
         });
 
         return () => {
@@ -54,13 +55,22 @@ const ProjectDetails = () => {
 
     const handleStatusChange = async (newStatus) => {
         try {
-            const token = localStorage.getItem('token');
-            await axios.put(`http://localhost:5001/api/projects/${id}/status`, { status: newStatus }, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
+            await axios.put(`http://localhost:5001/api/projects/${id}/status`, { status: newStatus });
             // Will be updated via socket
         } catch (error) {
             console.error('Failed to update status');
+        }
+    };
+
+    const handleMemberAction = async (studentId, action) => {
+        setActionLoading(studentId);
+        try {
+            await axios.put(`http://localhost:5001/api/projects/${id}/members/${studentId}`, { action });
+            // State updates automatically via Socket.io
+        } catch (error) {
+            alert(error.response?.data?.message || 'Failed to manage team member');
+        } finally {
+            setActionLoading(null);
         }
     };
 
@@ -78,7 +88,7 @@ const ProjectDetails = () => {
                         <span className="px-3 py-1 bg-gray-100 text-gray-800 rounded-full text-sm font-medium">
                             {currentProject.status}
                         </span>
-                        {(user.role === 'Supervisor' || user.role === 'Admin') && (
+                        {(user?.role === 'Supervisor' || user?.role === 'Admin') && (
                             <div className="ml-4 flex gap-2">
                                 <button
                                     onClick={() => handleStatusChange('Approved')}
@@ -107,14 +117,101 @@ const ProjectDetails = () => {
                 </div>
             </div>
 
+            {/* Team Members Section */}
+            <div className="bg-white shadow sm:rounded-lg mb-8 p-6">
+                <h3 className="text-lg font-bold text-gray-900 mb-4 border-b pb-2">Team Overview</h3>
+                
+                <div className="grid md:grid-cols-2 gap-8">
+                    {/* Active Members */}
+                    <div>
+                        <h4 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">Active Members</h4>
+                        {!currentProject.students || currentProject.students.length === 0 ? (
+                            <p className="text-sm text-gray-400 italic">No active members yet.</p>
+                        ) : (
+                            <ul className="space-y-3">
+                                {currentProject.students.map(member => (
+                                        <li key={member._id} className="flex items-center gap-3 bg-gray-50 p-2 rounded-lg border border-gray-100">
+                                        <div className="w-8 h-8 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold text-sm">
+                                            {member.name ? member.name.charAt(0) : '?'}
+                                        </div>
+                                        <div>
+                                            <p className="text-sm font-medium text-gray-900">{member.name || 'Unknown'}</p>
+                                            <p className="text-xs text-gray-500">{member.email || 'No email'}</p>
+                                        </div>
+                                    </li>
+                                ))}
+                            </ul>
+                        )}
+                    </div>
+
+                    {/* Pending Requests (Supervisor only) */}
+                    {(user?.role === 'Supervisor' || user?.role === 'Admin') && (
+                        <div>
+                            <h4 className="text-sm font-semibold text-amber-600 uppercase tracking-wider mb-3">Pending Join Requests</h4>
+                            {!currentProject.pendingStudents || currentProject.pendingStudents.length === 0 ? (
+                                <p className="text-sm text-gray-400 italic">No pending requests.</p>
+                            ) : (
+                                <ul className="space-y-3">
+                                    {currentProject.pendingStudents.map(student => (
+                                        <li key={student._id} className="flex items-center justify-between bg-amber-50 p-3 rounded-lg border border-amber-100">
+                                            <div className="flex items-center gap-3">
+                                                <div className="w-8 h-8 rounded-full bg-amber-200 text-amber-800 flex items-center justify-center font-bold text-sm">
+                                                    {student.name ? student.name.charAt(0) : '?'}
+                                                </div>
+                                                <div>
+                                                    <p className="text-sm font-medium text-amber-900">{student.name || 'Unknown'}</p>
+                                                    <p className="text-xs text-amber-700">{student.email || 'No email'}</p>
+                                                </div>
+                                            </div>
+                                            <div className="flex gap-2">
+                                                <button
+                                                    onClick={() => handleMemberAction(student._id, 'reject')}
+                                                    disabled={actionLoading === student._id}
+                                                    className="px-2 py-1 text-xs font-semibold text-red-600 bg-red-100 hover:bg-red-200 rounded disabled:opacity-50"
+                                                >
+                                                    Reject
+                                                </button>
+                                                <button
+                                                    onClick={() => handleMemberAction(student._id, 'approve')}
+                                                    disabled={actionLoading === student._id}
+                                                    className="px-2 py-1 text-xs font-semibold text-emerald-700 bg-emerald-100 hover:bg-emerald-200 rounded disabled:opacity-50"
+                                                >
+                                                    Approve
+                                                </button>
+                                            </div>
+                                        </li>
+                                    ))}
+                                </ul>
+                            )}
+                        </div>
+                    )}
+                </div>
+            </div>
+
             <div className="mb-6 flex justify-between items-center">
                 <h2 className="text-xl font-bold text-gray-900">Task Board</h2>
-                <button className="bg-indigo-600 text-white px-3 py-1.5 rounded text-sm hover:bg-indigo-700">
-                    Add Task
-                </button>
+                <div className="flex gap-4">
+                    <button 
+                        onClick={() => setIsChatOpen(true)}
+                        className="flex items-center gap-2 bg-indigo-100 text-indigo-700 px-4 py-2 rounded-lg text-sm font-medium hover:bg-indigo-200 transition-colors"
+                    >
+                        <MessageCircle size={18} />
+                        Project Chat
+                    </button>
+                    <button className="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors">
+                        Add Task
+                    </button>
+                </div>
             </div>
 
             <KanbanBoard projectId={id} tasks={tasks} />
+
+            <ChatPanel
+                isOpen={isChatOpen}
+                onClose={() => setIsChatOpen(false)}
+                projectId={id}
+                currentUserId={user?._id}
+            />
         </div>
     );
 };

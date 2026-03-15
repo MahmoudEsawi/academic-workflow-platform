@@ -1,16 +1,42 @@
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { FolderKanban, FileWarning, UsersRound, ArrowRight, Check, X } from 'lucide-react';
-import { fetchPendingRequests, handleSupervisionRequest } from '../redux/workflowSlice';
+import { FolderKanban, FileWarning, UsersRound, ArrowRight, Check, X, Bell } from 'lucide-react';
+import { fetchPendingRequests, handleSupervisionRequest, addNewRequest } from '../redux/workflowSlice';
+import socket from '../socket';
 
 const SupervisorWidgets = () => {
     const dispatch = useDispatch();
     const { projects } = useSelector((state) => state.project);
     const { requests, isLoading: workflowLoading } = useSelector((state) => state.workflow);
+    const [notifications, setNotifications] = React.useState([]);
 
     useEffect(() => {
         dispatch(fetchPendingRequests());
+
+        const handleNewRequest = (requestData) => {
+            // Update the redux store immediately to show it in the list
+            dispatch(addNewRequest(requestData));
+
+            // Show a visual toast notification
+            const newNotification = {
+                id: Date.now(),
+                message: `New supervision request from ${requestData.student?.name || 'a student'}`,
+            };
+            
+            setNotifications((prev) => [newNotification, ...prev]);
+
+            // Auto-remove notification toast after 5 seconds
+            setTimeout(() => {
+                setNotifications((prev) => prev.filter(n => n.id !== newNotification.id));
+            }, 5000);
+        };
+
+        socket.on('newSupervisionRequest', handleNewRequest);
+
+        return () => {
+            socket.off('newSupervisionRequest', handleNewRequest);
+        };
     }, [dispatch]);
 
     const handleApprove = (id) => {
@@ -163,6 +189,31 @@ const SupervisorWidgets = () => {
                         )}
                     </div>
                 </div>
+            </div>
+
+            {/* Real-time Notification Container */}
+            <div className="fixed bottom-4 right-4 z-50 flex flex-col gap-2">
+                {notifications.map((notif) => (
+                    <div 
+                        key={notif.id} 
+                        className="bg-white border-l-4 border-indigo-500 shadow-xl rounded-md p-4 flex items-start gap-3 w-80 animate-[slideIn_0.3s_ease-out_forwards]"
+                    >
+                        <div className="bg-indigo-100 p-2 rounded-full text-indigo-600 shrink-0">
+                            <Bell size={20} />
+                        </div>
+                        <div className="flex-1">
+                            <h4 className="text-sm font-semibold text-gray-900">New Request</h4>
+                            <p className="text-sm text-gray-600 mt-1">{notif.message}</p>
+                            <span className="text-xs text-gray-400 block mt-2">Just now</span>
+                        </div>
+                        <button 
+                            onClick={() => setNotifications(prev => prev.filter(n => n.id !== notif.id))}
+                            className="text-gray-400 hover:text-gray-600 transition-colors"
+                        >
+                            <X size={16} />
+                        </button>
+                    </div>
+                ))}
             </div>
         </div>
     );

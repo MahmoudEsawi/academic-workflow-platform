@@ -21,6 +21,17 @@ export const sendRequest = async (req, res) => {
             supervisor: supervisorId
         });
 
+        // Emit socket event to the supervisor's specific room
+        const io = req.app.get('socketio');
+        if (io) {
+            // Populate student details before emitting so the frontend has names/emails
+            const populatedRequest = await SupervisionRequest.findById(request._id)
+                .populate('student', 'name email')
+                .populate('supervisor', 'name email');
+                
+            io.to(`user-${supervisorId}`).emit('newSupervisionRequest', populatedRequest);
+        }
+
         res.status(201).json(request);
     } catch (err) {
         res.status(500).json({ message: err.message });

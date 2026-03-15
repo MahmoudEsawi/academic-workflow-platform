@@ -15,10 +15,7 @@ const SupervisorSelection = () => {
         // Fetch list of available supervisors
         const fetchSupervisors = async () => {
             try {
-                const token = localStorage.getItem('token');
-                const { data } = await axios.get('http://localhost:5001/api/users/supervisors', {
-                    headers: { Authorization: `Bearer ${token}` }
-                });
+                const { data } = await axios.get('http://localhost:5001/api/users/supervisors');
                 setSupervisors(data);
             } catch (err) {
                 console.error(err);

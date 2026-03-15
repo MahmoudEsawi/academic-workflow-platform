@@ -1,36 +1,27 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-export const fetchPendingRequests = createAsyncThunk('workflow/fetchRequests', async (_, { getState, rejectWithValue }) => {
+export const fetchPendingRequests = createAsyncThunk('workflow/fetchRequests', async (_, { rejectWithValue }) => {
     try {
-        const { auth: { user } } = getState();
-        const { data } = await axios.get('http://localhost:5001/api/workflow/requests', {
-            headers: { Authorization: `Bearer ${user.token}` }
-        });
+        const { data } = await axios.get('http://localhost:5001/api/workflow/requests');
         return data;
     } catch (err) {
         return rejectWithValue(err.response?.data?.message || 'Error fetching requests');
     }
 });
 
-export const sendSupervisionRequest = createAsyncThunk('workflow/sendRequest', async (supervisorId, { getState, rejectWithValue }) => {
+export const sendSupervisionRequest = createAsyncThunk('workflow/sendRequest', async (supervisorId, { rejectWithValue }) => {
     try {
-        const { auth: { user } } = getState();
-        const { data } = await axios.post('http://localhost:5001/api/workflow/requests', { supervisorId }, {
-            headers: { Authorization: `Bearer ${user.token}` }
-        });
+        const { data } = await axios.post('http://localhost:5001/api/workflow/requests', { supervisorId });
         return data;
     } catch (err) {
         return rejectWithValue(err.response?.data?.message || 'Error sending request');
     }
 });
 
-export const handleSupervisionRequest = createAsyncThunk('workflow/handleRequest', async ({ requestId, status }, { getState, rejectWithValue }) => {
+export const handleSupervisionRequest = createAsyncThunk('workflow/handleRequest', async ({ requestId, status }, { rejectWithValue }) => {
     try {
-        const { auth: { user } } = getState();
-        const { data } = await axios.put(`http://localhost:5001/api/workflow/requests/${requestId}`, { status }, {
-            headers: { Authorization: `Bearer ${user.token}` }
-        });
+        const { data } = await axios.put(`http://localhost:5001/api/workflow/requests/${requestId}`, { status });
         return data;
     } catch (err) {
         return rejectWithValue(err.response?.data?.message || 'Error handling request');
@@ -49,6 +40,13 @@ const workflowSlice = createSlice({
         clearWorkflowMessages: (state) => {
             state.error = null;
             state.successMessage = null;
+        },
+        addNewRequest: (state, action) => {
+            // Check if it already exists to avoid duplicates
+            const exists = state.requests.find(r => r._id === action.payload._id);
+            if (!exists) {
+                state.requests.unshift(action.payload);
+            }
         }
     },
     extraReducers: (builder) => {
@@ -85,5 +83,5 @@ const workflowSlice = createSlice({
     }
 });
 
-export const { clearWorkflowMessages } = workflowSlice.actions;
+export const { clearWorkflowMessages, addNewRequest } = workflowSlice.actions;
 export default workflowSlice.reducer;

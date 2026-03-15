@@ -5,6 +5,7 @@ import http from 'http';
 import { Server } from 'socket.io';
 import path from 'path';
 import mongoose from 'mongoose';
+import cookieParser from 'cookie-parser';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import bcrypt from 'bcryptjs';
 import User from './models/User.js';
@@ -17,6 +18,7 @@ import taskRoutes from './routes/taskRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 import workflowRoutes from './routes/workflowRoutes.js';
 import submissionRoutes from './routes/submissionRoutes.js';
+import messageRoutes from './routes/messageRoutes.js';
 
 dotenv.config();
 
@@ -24,12 +26,17 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
     cors: {
-        origin: '*',
+        origin: 'http://localhost:5173', // Must be specific origin when using credentials
+        credentials: true,
     },
 });
 
-app.use(cors());
+app.use(cors({
+    origin: 'http://localhost:5173',
+    credentials: true,
+}));
 app.use(express.json());
+app.use(cookieParser());
 
 const __dirname = path.resolve();
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
@@ -43,6 +50,7 @@ app.use('/api/tasks', taskRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/workflow', workflowRoutes);
 app.use('/api/submissions', submissionRoutes);
+app.use('/api/messages', messageRoutes);
 
 // Error Middlewares
 app.use((req, res, next) => {
@@ -114,6 +122,17 @@ connectDB()
             socket.on('joinProject', (projectId) => {
                 socket.join(`project-${projectId}`);
                 console.log(`Socket ${socket.id} joined project-${projectId}`);
+            });
+
+            socket.on('joinUserRoom', (userId) => {
+                socket.join(`user-${userId}`);
+                console.log(`Socket ${socket.id} joined user-${userId}`);
+            });
+
+            socket.on('sendMessage', (data) => {
+                // data should contain { projectId, message }
+                // Broadcast it to everyone else in the same room
+                socket.to(`project-${data.projectId}`).emit('receiveMessage', data.message);
             });
 
             socket.on('disconnect', () => {

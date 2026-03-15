@@ -14,11 +14,8 @@ const Dashboard = () => {
     useEffect(() => {
         const fetchProjects = async () => {
             try {
-                const token = localStorage.getItem('token');
-                const { data } = await axios.get('http://localhost:5001/api/projects', {
-                    headers: { Authorization: `Bearer ${token}` },
-                });
-                dispatch(setProjects(data));
+                const response = await axios.get(import.meta.env.MODE === 'production' ? '/api/auth/me' : 'http://localhost:5001/api/auth/me');
+                dispatch(setProjects(response.data));
             } catch (err) {
                 console.error('Failed to fetch projects', err);
             }

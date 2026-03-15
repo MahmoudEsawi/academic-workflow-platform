@@ -2,9 +2,16 @@ import User from '../models/User.js';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
-const generateToken = (id) => {
-    return jwt.sign({ id }, process.env.JWT_SECRET || 'fallback_secret', {
+const generateTokenAndSetCookie = (res, id) => {
+    const token = jwt.sign({ id }, process.env.JWT_SECRET || 'fallback_secret', {
         expiresIn: '30d',
+    });
+
+    res.cookie('jwt', token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV !== 'development', // Use secure cookies in production
+        sameSite: 'strict', // Prevent CSRF
+        maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
     });
 };
 
@@ -28,13 +35,13 @@ export const registerUser = async (req, res) => {
         });
 
         if (user) {
+            generateTokenAndSetCookie(res, user._id);
             res.status(201).json({
                 _id: user.id,
                 name: user.name,
                 email: user.email,
                 role: user.role,
                 supervisor: user.supervisor,
-                token: generateToken(user._id),
             });
         } else {
             res.status(400).json({ message: 'Invalid user data' });
@@ -50,13 +57,13 @@ export const loginUser = async (req, res) => {
         const user = await User.findOne({ email });
 
         if (user && (await bcrypt.compare(password, user.password))) {
+            generateTokenAndSetCookie(res, user._id);
             res.json({
                 _id: user.id,
                 name: user.name,
                 email: user.email,
                 role: user.role,
                 supervisor: user.supervisor,
-                token: generateToken(user._id),
             });
         } else {
             res.status(401).json({ message: 'Invalid email or password' });
@@ -64,6 +71,14 @@ export const loginUser = async (req, res) => {
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
+};
+
+export const logoutUser = (req, res) => {
+    res.cookie('jwt', '', {
+        httpOnly: true,
+        expires: new Date(0),
+    });
+    res.status(200).json({ message: 'User logged out successfully' });
 };
 
 export const getMe = async (req, res) => {

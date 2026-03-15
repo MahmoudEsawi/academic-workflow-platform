@@ -11,10 +11,7 @@ const StudentDashboard = () => {
     useEffect(() => {
         const fetchProjects = async () => {
             try {
-                const token = localStorage.getItem('token');
-                const { data } = await axios.get('http://localhost:5001/api/projects', {
-                    headers: { Authorization: `Bearer ${token}` },
-                });
+                const { data } = await axios.get('http://localhost:5001/api/projects');
                 dispatch(setProjects(data));
             } catch {
                 console.error('Failed to fetch projects');

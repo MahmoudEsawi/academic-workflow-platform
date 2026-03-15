@@ -16,10 +16,7 @@ const SubmissionReview = () => {
     useEffect(() => {
         const fetchHistory = async () => {
             try {
-                const token = localStorage.getItem('token');
-                const { data } = await axios.get(`http://localhost:5001/api/submissions/task/${taskId}`, {
-                    headers: { Authorization: `Bearer ${token}` }
-                });
+                const { data } = await axios.get(`http://localhost:5001/api/submissions/task/${taskId}`);
                 setSubmissions(data);
             } catch (err) {
                 console.error(err);
@@ -33,12 +30,9 @@ const SubmissionReview = () => {
         const currentSub = submissions[selectedSubIndex];
         setIsSubmitting(true);
         try {
-            const token = localStorage.getItem('token');
             const { data } = await axios.put(`http://localhost:5001/api/submissions/${currentSub._id}/review`, {
                 status,
                 overallFeedback
-            }, {
-                headers: { Authorization: `Bearer ${token}` }
             });
             // Update local state
             const updated = [...submissions];

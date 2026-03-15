@@ -37,6 +37,18 @@ const projectSlice = createSlice({
             if (index !== -1) {
                 state.projects[index].status = action.payload.status;
             }
+        },
+        updateProjectInStore: (state, action) => {
+            if (state.currentProject && state.currentProject._id === action.payload._id) {
+                state.currentProject = action.payload;
+            }
+            const index = state.projects.findIndex((p) => p._id === action.payload._id);
+            if (index !== -1) {
+                state.projects[index] = action.payload;
+            } else {
+                // If it's a new project that we didn't have before, append it.
+                state.projects.push(action.payload);
+            }
         }
     },
 });
@@ -48,6 +60,7 @@ export const {
     updateTaskInStore,
     addTaskToStore,
     removeTaskFromStore,
-    updateProjectStatusInStore
+    updateProjectStatusInStore,
+    updateProjectInStore
 } = projectSlice.actions;
 export default projectSlice.reducer;

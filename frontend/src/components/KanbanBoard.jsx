@@ -52,11 +52,9 @@ const KanbanBoard = ({ projectId, tasks }) => {
         dispatch(updateTaskInStore(movedTask));
 
         try {
-            const token = localStorage.getItem('token');
             await axios.put(
                 `http://localhost:5001/api/tasks/${movedTask._id}`,
-                { status: movedTask.status, position: movedTask.position },
-                { headers: { Authorization: `Bearer ${token}` } }
+                { status: movedTask.status, position: movedTask.position }
             );
         } catch (error) {
             console.error('Error updating task', error);

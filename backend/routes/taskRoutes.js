@@ -7,12 +7,13 @@ import {
 } from '../controllers/taskController.js';
 import { protect } from '../middleware/authMiddleware.js';
 import { authorizeRoles } from '../middleware/roleMiddleware.js';
+import { authorizeProjectAccess } from '../middleware/tenantMiddleware.js';
 
 const router = express.Router();
 
 router.route('/project/:projectId')
-    .post(protect, authorizeRoles('Student', 'Supervisor', 'Admin'), createTask)
-    .get(protect, getTasks);
+    .post(protect, authorizeProjectAccess, authorizeRoles('Student', 'Supervisor', 'Admin'), createTask)
+    .get(protect, authorizeProjectAccess, getTasks);
 
 router.route('/:id')
     .put(protect, updateTask)

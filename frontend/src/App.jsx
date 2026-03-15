@@ -1,5 +1,10 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
+import axios from 'axios';
+
+// Ensure all Axios requests include cookies
+axios.defaults.withCredentials = true;
+
 import ProtectedRoute from './components/ProtectedRoute';
 import RootRedirect from './components/RootRedirect';
 import Layout from './components/Layout';
@@ -11,9 +16,29 @@ import SubmitProposal from './pages/SubmitProposal';
 import StudentWorkspace from './pages/StudentWorkspace';
 import SubmissionReview from './pages/SubmissionReview';
 
-function App() {
+// Create a wrapper component to use hooks inside Router
+function AppContent() {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+      const responseInterceptor = axios.interceptors.response.use(
+          (response) => response,
+          (error) => {
+              if (error.response && error.response.status === 403) {
+                  // If tenant unauthorized or strict role failure, bounce to dashboard
+                  navigate('/dashboard', { replace: true });
+                  alert("Unauthorized: You do not have permission to view this project.");
+              }
+              return Promise.reject(error);
+          }
+      );
+
+      return () => {
+          axios.interceptors.response.eject(responseInterceptor);
+      };
+  }, [navigate]);
+
   return (
-    <Router>
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
@@ -42,8 +67,15 @@ function App() {
 
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
-    </Router>
   );
+}
+
+function App() {
+    return (
+        <Router>
+            <AppContent />
+        </Router>
+    );
 }
 
 export default App;

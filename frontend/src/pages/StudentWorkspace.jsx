@@ -21,10 +21,7 @@ const StudentWorkspace = () => {
     useEffect(() => {
         const fetchHistory = async () => {
             try {
-                const token = localStorage.getItem('token');
-                const { data } = await axios.get(`http://localhost:5001/api/submissions/task/${taskId}`, {
-                    headers: { Authorization: `Bearer ${token}` }
-                });
+                const { data } = await axios.get(`http://localhost:5001/api/submissions/task/${taskId}`);
                 setSubmissions(data);
             } catch (err) {
                 console.error(err);
@@ -37,15 +34,12 @@ const StudentWorkspace = () => {
         e.preventDefault();
         setIsSubmitting(true);
         try {
-            const token = localStorage.getItem('token');
             const payload = {
                 taskId,
                 description,
                 ...(activeTab === 'code' ? { content, language } : { fileUrl })
             };
-            const { data } = await axios.post('http://localhost:5001/api/submissions', payload, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
+            const { data } = await axios.post('http://localhost:5001/api/submissions', payload);
             setSubmissions([data, ...submissions]);
             setContent('');
             setDescription('');

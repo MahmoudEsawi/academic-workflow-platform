@@ -4,6 +4,7 @@ const URL = import.meta.env.MODE === 'production' ? undefined : 'http://localhos
 
 const socket = io(URL, {
     autoConnect: false, // We'll connect manually when logged in
+    withCredentials: true,
 });
 
 export default socket;
