@@ -65,7 +65,7 @@ const SupervisorWidgets = () => {
                 </div>
 
                 <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex items-center gap-4">
-                    <div className="p-3 bg-indigo-50 text-indigo-600 rounded-xl">
+                    <div className="p-3 bg-[#00244D]/10 text-[#00244D] rounded-xl">
                         <FolderKanban size={24} />
                     </div>
                     <div>
@@ -89,19 +89,19 @@ const SupervisorWidgets = () => {
 
             {/* Supervision Requests Widget (Full Width) */}
             {requests && requests.length > 0 && (
-                <div className="bg-indigo-50 rounded-2xl border border-indigo-100 p-6 flex flex-col md:flex-row gap-6 items-center justify-between shadow-sm">
+                <div className="bg-[#00244D]/10 rounded-2xl border border-[#00244D]/10 p-6 flex flex-col md:flex-row gap-6 items-center justify-between shadow-sm">
                     <div>
-                        <h2 className="text-lg font-bold text-indigo-900 flex items-center gap-2">
+                        <h2 className="text-lg font-bold text-[#00244D] flex items-center gap-2">
                             <UsersRound size={20} />
                             Student Supervision Requests
                         </h2>
-                        <p className="text-sm text-indigo-700 mt-1">
+                        <p className="text-sm text-[#00244D] mt-1">
                             You have {requests.length} students waiting for you to supervise their academic projects.
                         </p>
                     </div>
                     <div className="flex flex-col gap-3 w-full md:w-auto">
                         {requests.map(req => (
-                            <div key={req._id} className="bg-white px-5 py-3 rounded-xl border border-indigo-200 shadow-sm flex items-center justify-between gap-6 min-w-full md:min-w-[400px]">
+                            <div key={req._id} className="bg-white px-5 py-3 rounded-xl border border-[#00244D]/20 shadow-sm flex items-center justify-between gap-6 min-w-full md:min-w-[400px]">
                                 <div>
                                     <h4 className="font-bold text-slate-900">{req.student?.name}</h4>
                                     <p className="text-xs text-slate-500">{req.student?.email}</p>
@@ -118,7 +118,7 @@ const SupervisorWidgets = () => {
                                     <button
                                         onClick={() => handleApprove(req._id)}
                                         disabled={workflowLoading}
-                                        className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 transition-colors"
+                                        className="flex items-center gap-2 px-4 py-2 bg-[#00244D] text-white text-sm font-medium rounded-lg hover:bg-[#003366] transition-colors"
                                     >
                                         <Check size={16} /> Approve Link
                                     </button>
@@ -151,7 +151,7 @@ const SupervisorWidgets = () => {
                                         </span>
                                         <Link
                                             to={`/project/${project._id}`}
-                                            className="text-sm font-semibold text-indigo-600 hover:text-indigo-800 flex items-center gap-1"
+                                            className="text-sm font-semibold text-[#00244D] hover:text-[#001a38] flex items-center gap-1"
                                         >
                                             Review <ArrowRight size={14} />
                                         </Link>
@@ -175,13 +175,13 @@ const SupervisorWidgets = () => {
                                 <Link
                                     key={project._id}
                                     to={`/project/${project._id}`}
-                                    className="flex items-center justify-between p-4 rounded-xl border border-slate-200 hover:border-indigo-300 hover:shadow-sm transition-all group"
+                                    className="flex items-center justify-between p-4 rounded-xl border border-slate-200 hover:border-[#3498DB] hover:shadow-sm transition-all group"
                                 >
                                     <div>
-                                        <h4 className="font-semibold text-slate-800 group-hover:text-indigo-600 transition-colors">{project.title}</h4>
+                                        <h4 className="font-semibold text-slate-800 group-hover:text-[#00244D] transition-colors">{project.title}</h4>
                                         <p className="text-xs text-slate-500 mt-0.5">{project.students?.length || 0} Members</p>
                                     </div>
-                                    <div className="text-slate-300 group-hover:text-indigo-500 transition-colors">
+                                    <div className="text-slate-300 group-hover:text-[#3498DB] transition-colors">
                                         <ArrowRight size={20} />
                                     </div>
                                 </Link>
@@ -196,9 +196,9 @@ const SupervisorWidgets = () => {
                 {notifications.map((notif) => (
                     <div 
                         key={notif.id} 
-                        className="bg-white border-l-4 border-indigo-500 shadow-xl rounded-md p-4 flex items-start gap-3 w-80 animate-[slideIn_0.3s_ease-out_forwards]"
+                        className="bg-white border-l-4 border-[#00244D] shadow-xl rounded-md p-4 flex items-start gap-3 w-80 animate-[slideIn_0.3s_ease-out_forwards]"
                     >
-                        <div className="bg-indigo-100 p-2 rounded-full text-indigo-600 shrink-0">
+                        <div className="bg-[#00244D]/15 p-2 rounded-full text-[#00244D] shrink-0">
                             <Bell size={20} />
                         </div>
                         <div className="flex-1">

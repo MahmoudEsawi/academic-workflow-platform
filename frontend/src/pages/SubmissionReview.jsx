@@ -85,7 +85,7 @@ const SubmissionReview = () => {
                     <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden flex flex-col h-[600px]">
                         <div className="px-6 py-4 bg-slate-50 border-b border-slate-200 flex justify-between items-center">
                             <h3 className="font-bold text-slate-700 flex items-center gap-2">
-                                {currentSub.content ? <Code size={18} className="text-indigo-500" /> : <FileText size={18} className="text-blue-500" />}
+                                {currentSub.content ? <Code size={18} className="text-[#3498DB]" /> : <FileText size={18} className="text-blue-500" />}
                                 Version {currentSub.version} - {currentSub.content ? 'Source Code' : 'Document Reference'}
                             </h3>
                             <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${currentSub.status === 'Approved' ? 'bg-emerald-100 text-emerald-800' :
@@ -111,7 +111,7 @@ const SubmissionReview = () => {
                                     <FileText size={48} className="text-slate-400" />
                                     <div>
                                         <p className="font-medium text-slate-800">File Attachment URL:</p>
-                                        <a href={currentSub.fileUrl} target="_blank" rel="noreferrer" className="text-indigo-600 hover:underline mt-1 break-all">
+                                        <a href={currentSub.fileUrl} target="_blank" rel="noreferrer" className="text-[#00244D] hover:underline mt-1 break-all">
                                             {currentSub.fileUrl}
                                         </a>
                                     </div>
@@ -175,12 +175,12 @@ const SubmissionReview = () => {
                                     setOverallFeedback(sub.overallFeedback || '');
                                 }}
                                 className={`w-full text-left p-4 rounded-xl border transition-all ${idx === selectedSubIndex
-                                        ? 'border-indigo-600 bg-indigo-50 ring-1 ring-indigo-600'
-                                        : 'border-slate-200 hover:border-indigo-300 bg-white'
+                                        ? 'border-[#00244D] bg-[#00244D]/10 ring-1 ring-[#00244D]'
+                                        : 'border-slate-200 hover:border-[#3498DB] bg-white'
                                     }`}
                             >
                                 <div className="flex justify-between items-center mb-1">
-                                    <span className={`font-bold ${idx === selectedSubIndex ? 'text-indigo-700' : 'text-slate-700'}`}>
+                                    <span className={`font-bold ${idx === selectedSubIndex ? 'text-[#00244D]' : 'text-slate-700'}`}>
                                         Version {sub.version} {idx === 0 ? '(Latest)' : ''}
                                     </span>
                                 </div>

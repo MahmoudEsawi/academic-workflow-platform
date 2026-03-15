@@ -24,7 +24,7 @@ const StudentDashboard = () => {
         <div>
             <div className="flex justify-between items-center mb-6">
                 <h1 className="text-2xl font-bold text-gray-900">Student Dashboard</h1>
-                <Link to="/student-dashboard/submit" className="inline-block bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition-colors shadow-sm">
+                <Link to="/student-dashboard/submit" className="inline-block bg-[#00244D] text-white px-4 py-2 rounded-md hover:bg-[#003366] transition-colors shadow-sm">
                     Submit Proposal
                 </Link>
             </div>
@@ -47,7 +47,7 @@ const StudentDashboard = () => {
                                 <span>Supervisor: {project.supervisor?.name || 'Unassigned'}</span>
                                 <span className={`px-2 py-1 rounded-full font-medium ${project.status === 'Approved' ? 'bg-green-100 text-green-800' :
                                     project.status === 'Rejected' ? 'bg-red-100 text-red-800' :
-                                        'bg-indigo-100 text-indigo-800'
+                                        'bg-[#00244D]/15 text-[#001a38]'
                                     }`}>
                                     {project.status}
                                 </span>
@@ -58,7 +58,7 @@ const StudentDashboard = () => {
                 {projects.length === 0 && (
                     <div className="col-span-full text-center py-12 bg-gray-50 rounded-lg border border-dashed border-gray-300">
                         <p className="text-gray-500 mb-4">You haven't submitted a project proposal yet.</p>
-                        <Link to="/student-dashboard/submit" className="text-indigo-600 font-medium hover:text-indigo-800">
+                        <Link to="/student-dashboard/submit" className="text-[#00244D] font-medium hover:text-[#001a38]">
                             Create your first proposal
                         </Link>
                     </div>

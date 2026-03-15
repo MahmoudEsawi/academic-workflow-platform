@@ -73,7 +73,7 @@ const KanbanBoard = ({ projectId, tasks }) => {
                                 <div
                                     ref={provided.innerRef}
                                     {...provided.droppableProps}
-                                    className={`flex-1 min-h-[200px] rounded-md p-2 ${snapshot.isDraggingOver ? 'bg-indigo-50' : ''
+                                    className={`flex-1 min-h-[200px] rounded-md p-2 ${snapshot.isDraggingOver ? 'bg-[#00244D]/10' : ''
                                         }`}
                                 >
                                     {boardData[columnId]?.map((task, index) => (
@@ -83,7 +83,7 @@ const KanbanBoard = ({ projectId, tasks }) => {
                                                     ref={provided.innerRef}
                                                     {...provided.draggableProps}
                                                     {...provided.dragHandleProps}
-                                                    className={`bg-white p-4 rounded shadow-sm mb-3 border border-gray-200 ${snapshot.isDragging ? 'shadow-md border-indigo-400' : ''
+                                                    className={`bg-white p-4 rounded shadow-sm mb-3 border border-gray-200 ${snapshot.isDragging ? 'shadow-md border-[#003366]' : ''
                                                         }`}
                                                 >
                                                     <h4 className="font-medium text-gray-800">{task.title}</h4>
@@ -94,7 +94,7 @@ const KanbanBoard = ({ projectId, tasks }) => {
                                                     )}
                                                     <div className="mt-4 flex items-center justify-between">
                                                         {task.assignedTo ? (
-                                                            <div className="text-xs bg-indigo-100 text-indigo-800 px-2 py-1 rounded inline-block">
+                                                            <div className="text-xs bg-[#00244D]/15 text-[#001a38] px-2 py-1 rounded inline-block">
                                                                 {task.assignedTo?.name || 'Assigned'}
                                                             </div>
                                                         ) : <div />}
@@ -102,7 +102,7 @@ const KanbanBoard = ({ projectId, tasks }) => {
                                                         {user?.role === 'Student' && (
                                                             <Link
                                                                 to={`/workspace/${task._id}`}
-                                                                className="text-xs font-semibold text-indigo-600 hover:text-indigo-800 flex items-center gap-1 bg-indigo-50 px-2 py-1 rounded hover:bg-indigo-100 transition-colors"
+                                                                className="text-xs font-semibold text-[#00244D] hover:text-[#001a38] flex items-center gap-1 bg-[#00244D]/10 px-2 py-1 rounded hover:bg-[#00244D]/15 transition-colors"
                                                             >
                                                                 Workspace <ArrowUpRight size={14} />
                                                             </Link>

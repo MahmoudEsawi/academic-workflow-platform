@@ -131,7 +131,7 @@ const ProjectDetails = () => {
                             <ul className="space-y-3">
                                 {currentProject.students.map(member => (
                                         <li key={member._id} className="flex items-center gap-3 bg-gray-50 p-2 rounded-lg border border-gray-100">
-                                        <div className="w-8 h-8 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold text-sm">
+                                        <div className="w-8 h-8 rounded-full bg-[#00244D]/15 text-[#00244D] flex items-center justify-center font-bold text-sm">
                                             {member.name ? member.name.charAt(0) : '?'}
                                         </div>
                                         <div>
@@ -193,12 +193,12 @@ const ProjectDetails = () => {
                 <div className="flex gap-4">
                     <button 
                         onClick={() => setIsChatOpen(true)}
-                        className="flex items-center gap-2 bg-indigo-100 text-indigo-700 px-4 py-2 rounded-lg text-sm font-medium hover:bg-indigo-200 transition-colors"
+                        className="flex items-center gap-2 bg-[#00244D]/15 text-[#00244D] px-4 py-2 rounded-lg text-sm font-medium hover:bg-[#00244D]/20 transition-colors"
                     >
                         <MessageCircle size={18} />
                         Project Chat
                     </button>
-                    <button className="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors">
+                    <button className="bg-[#00244D] text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-[#003366] transition-colors">
                         Add Task
                     </button>
                 </div>

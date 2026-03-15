@@ -49,7 +49,7 @@ const StudentWidgets = () => {
             <div className="space-y-6">
                 <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-200">
                     <div className="flex items-center gap-3 mb-6">
-                        <div className="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center">
+                        <div className="w-12 h-12 bg-[#00244D]/10 text-[#00244D] rounded-xl flex items-center justify-center">
                             <Layers size={24} />
                         </div>
                         <div>
@@ -62,7 +62,7 @@ const StudentWidgets = () => {
 
                     <Link
                         to="/dashboard/submit"
-                        className="inline-flex w-full md:w-auto items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-3 px-6 rounded-lg transition-all shadow-sm shadow-indigo-200 mb-8"
+                        className="inline-flex w-full md:w-auto items-center justify-center gap-2 bg-[#00244D] hover:bg-[#003366] text-white font-medium py-3 px-6 rounded-lg transition-all shadow-sm shadow-[#00244D]/15 mb-8"
                     >
                         <Plus size={18} />
                         Submit New Proposal
@@ -76,7 +76,7 @@ const StudentWidgets = () => {
                             </h4>
                             <div className="grid gap-4 md:grid-cols-2">
                                 {availableTeams.map(team => (
-                                    <div key={team._id} className="border border-slate-200 p-5 rounded-xl flex flex-col justify-between hover:border-indigo-300 transition-colors">
+                                    <div key={team._id} className="border border-slate-200 p-5 rounded-xl flex flex-col justify-between hover:border-[#3498DB] transition-colors">
                                         <div>
                                             <h5 className="font-bold text-slate-900">{team.title}</h5>
                                             <p className="text-sm text-slate-500 mt-1 line-clamp-2">{team.description}</p>
@@ -114,7 +114,7 @@ const StudentWidgets = () => {
             <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
                 <div className="flex items-center justify-between mb-4">
                     <h2 className="text-lg font-bold text-slate-800 flex items-center gap-2">
-                        <Layers className="text-indigo-500" size={20} />
+                        <Layers className="text-[#3498DB]" size={20} />
                         My Project Status
                     </h2>
                     <span className={`inline-flex items-center rounded-md px-2.5 py-1 text-xs font-semibold ring-1 ring-inset ${statusColors[myProject.status] || statusColors['Pending']}`}>
@@ -128,7 +128,7 @@ const StudentWidgets = () => {
                     </div>
                     <div className="pt-4 border-t border-slate-100 flex items-center justify-between text-sm">
                         <span className="text-slate-500">Supervisor: <strong className="text-slate-700">{myProject.supervisor?.name || 'Pending Assignment'}</strong></span>
-                        <Link to={`/project/${myProject._id}`} className="text-indigo-600 font-semibold hover:text-indigo-700 flex items-center gap-1">
+                        <Link to={`/project/${myProject._id}`} className="text-[#00244D] font-semibold hover:text-[#00244D] flex items-center gap-1">
                             View Details &rarr;
                         </Link>
                     </div>

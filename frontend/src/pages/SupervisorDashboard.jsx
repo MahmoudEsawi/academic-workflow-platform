@@ -66,7 +66,7 @@ const SupervisorDashboard = () => {
                                 {project.description}
                             </p>
                             <div className="mt-4 flex items-center justify-between text-xs text-gray-500">
-                                <span className="bg-indigo-100 text-indigo-800 px-2 py-1 rounded-full">{project.status}</span>
+                                <span className="bg-[#00244D]/15 text-[#001a38] px-2 py-1 rounded-full">{project.status}</span>
                                 <span>{new Date(project.createdAt).toLocaleDateString()}</span>
                             </div>
                         </div>
@@ -84,9 +84,9 @@ const SupervisorDashboard = () => {
                 {notifications.map((notif) => (
                     <div 
                         key={notif.id} 
-                        className="bg-white border-l-4 border-indigo-500 shadow-xl rounded-md p-4 flex items-start gap-3 w-80 animate-[slideIn_0.3s_ease-out_forwards]"
+                        className="bg-white border-l-4 border-[#00244D] shadow-xl rounded-md p-4 flex items-start gap-3 w-80 animate-[slideIn_0.3s_ease-out_forwards]"
                     >
-                        <div className="bg-indigo-100 p-2 rounded-full text-indigo-600 shrink-0">
+                        <div className="bg-[#00244D]/15 p-2 rounded-full text-[#00244D] shrink-0">
                             <Bell size={20} />
                         </div>
                         <div className="flex-1">

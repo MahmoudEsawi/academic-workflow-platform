@@ -82,7 +82,7 @@ const ChatPanel = ({ isOpen, onClose, projectId, currentUserId }) => {
             <div className="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar">
                 {isLoading && messages.length === 0 ? (
                     <div className="flex justify-center items-center h-full">
-                        <div className="w-6 h-6 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
+                        <div className="w-6 h-6 border-2 border-[#00244D] border-t-transparent rounded-full animate-spin"></div>
                     </div>
                 ) : messages.length === 0 ? (
                     <div className="flex flex-col items-center justify-center h-full text-slate-400 dark:text-slate-500">
@@ -108,12 +108,12 @@ const ChatPanel = ({ isOpen, onClose, projectId, currentUserId }) => {
                                 <div
                                     className={`px-4 py-2 rounded-2xl ${
                                         isMine
-                                            ? 'bg-indigo-600 text-white rounded-tr-sm shadow-sm'
+                                            ? 'bg-[#00244D] text-white rounded-tr-sm shadow-sm'
                                             : 'bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 rounded-tl-sm shadow-sm'
                                     }`}
                                 >
                                     <p className="text-sm py-1 font-medium">{msg.content}</p>
-                                    <span className={`text-[10px] mt-1 block text-right ${isMine ? 'text-indigo-200' : 'text-slate-400'}`}>
+                                    <span className={`text-[10px] mt-1 block text-right ${isMine ? 'text-slate-300' : 'text-slate-400'}`}>
                                         {formatTime(msg.createdAt)}
                                     </span>
                                 </div>
@@ -128,7 +128,7 @@ const ChatPanel = ({ isOpen, onClose, projectId, currentUserId }) => {
             <div className="p-4 border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
                 <form
                     onSubmit={handleSendMessage}
-                    className="flex items-center gap-2 bg-slate-50 dark:bg-slate-800 p-1.5 rounded-full border border-slate-200 dark:border-slate-700 focus-within:ring-2 focus-within:ring-indigo-500/20 focus-within:border-indigo-500 transition-all"
+                    className="flex items-center gap-2 bg-slate-50 dark:bg-slate-800 p-1.5 rounded-full border border-slate-200 dark:border-slate-700 focus-within:ring-2 focus-within:ring-[#00244D]/20 focus-within:border-[#00244D] transition-all"
                 >
                     <input
                         type="text"
@@ -140,7 +140,7 @@ const ChatPanel = ({ isOpen, onClose, projectId, currentUserId }) => {
                     <button
                         type="submit"
                         disabled={!newMessage.trim()}
-                        className="p-2 rounded-full bg-indigo-600 text-white disabled:opacity-50 disabled:cursor-not-allowed hover:bg-indigo-700 transition-colors"
+                        className="p-2 rounded-full bg-[#00244D] text-white disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#003366] transition-colors"
                     >
                         <Send size={16} />
                     </button>

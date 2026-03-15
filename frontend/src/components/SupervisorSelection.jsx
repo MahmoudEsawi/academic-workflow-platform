@@ -40,7 +40,7 @@ const SupervisorSelection = () => {
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
                 <div className="p-6 border-b border-gray-200">
                     <div className="flex items-center gap-3">
-                        <div className="p-2 bg-indigo-50 text-indigo-600 rounded-lg">
+                        <div className="p-2 bg-[#00244D]/10 text-[#00244D] rounded-lg">
                             <Users size={24} />
                         </div>
                         <div>
@@ -80,7 +80,7 @@ const SupervisorSelection = () => {
                     ) : (
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             {supervisors.map((doctor) => (
-                                <div key={doctor._id} className="border border-gray-200 rounded-lg p-5 hover:border-indigo-300 transition-colors flex flex-col justify-between">
+                                <div key={doctor._id} className="border border-gray-200 rounded-lg p-5 hover:border-[#3498DB] transition-colors flex flex-col justify-between">
                                     <div>
                                         <h3 className="text-lg font-bold text-gray-900">{doctor.name}</h3>
                                         <p className="text-sm text-gray-500">{doctor.email}</p>
@@ -88,7 +88,7 @@ const SupervisorSelection = () => {
                                     <button
                                         onClick={() => handleSendRequest(doctor._id)}
                                         disabled={isLoading}
-                                        className="mt-6 w-full py-2 px-4 bg-indigo-50 text-indigo-700 font-medium rounded-md hover:bg-indigo-100 transition-colors disabled:opacity-50"
+                                        className="mt-6 w-full py-2 px-4 bg-[#00244D]/10 text-[#00244D] font-medium rounded-md hover:bg-[#00244D]/15 transition-colors disabled:opacity-50"
                                     >
                                         Send Request
                                     </button>

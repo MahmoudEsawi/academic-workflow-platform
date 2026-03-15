@@ -57,7 +57,7 @@ const SubmitProposal = () => {
                         <input
                             type="text"
                             required
-                            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+                            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-[#00244D] focus:border-[#00244D]"
                             placeholder="Enter a descriptive title..."
                             value={title}
                             onChange={(e) => setTitle(e.target.value)}
@@ -68,7 +68,7 @@ const SubmitProposal = () => {
                         <textarea
                             required
                             rows={6}
-                            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+                            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-[#00244D] focus:border-[#00244D]"
                             placeholder="Describe your project, the problem it solves, and the technologies you plan to use..."
                             value={description}
                             onChange={(e) => setDescription(e.target.value)}
@@ -78,7 +78,7 @@ const SubmitProposal = () => {
                         <label className="block text-sm font-medium text-gray-700 mb-1">Select Supervisor</label>
                         <select
                             required
-                            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 bg-white"
+                            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-[#00244D] focus:border-[#00244D] bg-white"
                             value={supervisorId}
                             onChange={(e) => setSupervisorId(e.target.value)}
                         >
@@ -101,7 +101,7 @@ const SubmitProposal = () => {
                         <button
                             type="submit"
                             disabled={isSubmitting}
-                            className={`px-4 py-2 text-sm font-medium text-white rounded-md transition-colors ${isSubmitting ? 'bg-indigo-400 cursor-not-allowed' : 'bg-indigo-600 hover:bg-indigo-700'
+                            className={`px-4 py-2 text-sm font-medium text-white rounded-md transition-colors ${isSubmitting ? 'bg-[#00244D] cursor-not-allowed' : 'bg-[#00244D] hover:bg-[#003366]'
                                 }`}
                         >
                             {isSubmitting ? 'Submitting...' : 'Submit Proposal'}

@@ -50,7 +50,7 @@ const LiveTeamHub = () => {
             case 'task': return 'bg-blue-100 text-blue-600';
             case 'proposal': return 'bg-green-100 text-green-600';
             case 'system': return 'bg-slate-100 text-slate-500';
-            default: return 'bg-indigo-100 text-indigo-600';
+            default: return 'bg-[#00244D]/15 text-[#00244D]';
         }
     };
 
@@ -58,7 +58,7 @@ const LiveTeamHub = () => {
         <div className="bg-white rounded-2xl shadow-sm border border-slate-200 flex flex-col h-[calc(100vh-8rem)] sticky top-8 overflow-hidden">
             <div className="bg-slate-50 border-b border-slate-200 p-5 flex items-center justify-between z-10">
                 <div className="flex items-center gap-3">
-                    <div className="p-2 bg-indigo-600 text-white rounded-lg shadow-sm">
+                    <div className="p-2 bg-[#00244D] text-white rounded-lg shadow-sm">
                         <Activity size={18} />
                     </div>
                     <h3 className="font-bold text-slate-800">Live Team Hub</h3>
