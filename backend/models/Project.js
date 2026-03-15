@@ -1,5 +1,14 @@
 import mongoose from 'mongoose';
 
+const generateInviteCode = () => {
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    let code = '';
+    for (let i = 0; i < 6; i++) {
+        code += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return code;
+};
+
 const projectSchema = new mongoose.Schema(
     {
         title: {
@@ -14,6 +23,11 @@ const projectSchema = new mongoose.Schema(
             type: String,
             enum: ['Pending', 'Approved', 'Rejected', 'Edits Requested'],
             default: 'Pending',
+        },
+        inviteCode: {
+            type: String,
+            unique: true,
+            default: generateInviteCode,
         },
         students: [
             {

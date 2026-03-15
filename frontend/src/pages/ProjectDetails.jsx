@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setCurrentProject, setTasks, updateTaskInStore, updateProjectStatusInStore, updateProjectInStore } from '../redux/projectSlice';
 import KanbanBoard from '../components/KanbanBoard';
 import ChatPanel from '../components/ChatPanel';
-import { MessageCircle } from 'lucide-react';
+import { MessageCircle, Copy, KeyRound } from 'lucide-react';
 import axios from 'axios';
 import socket from '../socket';
 
@@ -186,6 +186,33 @@ const ProjectDetails = () => {
                         </div>
                     )}
                 </div>
+
+                {/* Invite Code Share */}
+                {currentProject.inviteCode && (
+                    <div className="mt-6 pt-6 border-t border-gray-200">
+                        <div className="bg-slate-50 rounded-xl p-4 flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                                <div className="p-2 bg-[#00244D]/10 text-[#00244D] rounded-lg">
+                                    <KeyRound size={18} />
+                                </div>
+                                <div>
+                                    <p className="text-xs text-slate-500 font-medium">Team Invite Code</p>
+                                    <p className="text-xl font-mono font-bold text-[#00244D] tracking-widest">{currentProject.inviteCode}</p>
+                                </div>
+                            </div>
+                            <button
+                                onClick={() => {
+                                    navigator.clipboard.writeText(currentProject.inviteCode);
+                                    alert('Invite code copied!');
+                                }}
+                                className="flex items-center gap-2 px-4 py-2 bg-[#00244D] text-white rounded-lg text-sm font-medium hover:bg-[#003366] transition-colors"
+                            >
+                                <Copy size={14} /> Copy Code
+                            </button>
+                        </div>
+                        <p className="text-xs text-slate-500 mt-2">Share this code with students so they can request to join your project team.</p>
+                    </div>
+                )}
             </div>
 
             <div className="mb-6 flex justify-between items-center">

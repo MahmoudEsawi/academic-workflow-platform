@@ -151,6 +151,39 @@ export const joinProject = async (req, res) => {
     }
 };
 
+export const joinByCode = async (req, res) => {
+    try {
+        const { code } = req.body;
+        if (!code) return res.status(400).json({ message: 'Invite code is required' });
+
+        const project = await Project.findOne({ inviteCode: code.toUpperCase() });
+        if (!project) return res.status(404).json({ message: 'Invalid invite code. No project found.' });
+
+        if (project.students.some(id => id.toString() === req.user._id.toString())) {
+            return res.status(400).json({ message: 'You are already a member of this project' });
+        }
+        if (project.pendingStudents.some(id => id.toString() === req.user._id.toString())) {
+            return res.status(400).json({ message: 'You have already requested to join this project' });
+        }
+
+        project.pendingStudents.push(req.user._id);
+        await project.save();
+
+        const io = req.app.get('socketio');
+        if (io && project.supervisor) {
+            io.to(`user-${project.supervisor}`).emit('newTeamJoinRequest', {
+                projectId: project._id,
+                projectTitle: project.title,
+                student: req.user
+            });
+        }
+
+        res.status(200).json({ message: `Request to join "${project.title}" sent! Waiting for supervisor approval.`, projectTitle: project.title });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
 export const leaveProject = async (req, res) => {
     try {
         const project = await Project.findById(req.params.id);

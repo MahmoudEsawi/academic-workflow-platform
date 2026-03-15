@@ -15,6 +15,7 @@ import ProjectDetails from './pages/ProjectDetails';
 import SubmitProposal from './pages/SubmitProposal';
 import StudentWorkspace from './pages/StudentWorkspace';
 import SubmissionReview from './pages/SubmissionReview';
+import Profile from './pages/Profile';
 
 // Create a wrapper component to use hooks inside Router
 function AppContent() {
@@ -55,6 +56,7 @@ function AppContent() {
           <Route element={<ProtectedRoute allowedRoles={['Student', 'Supervisor', 'Admin']} />}>
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/project/:id" element={<ProjectDetails />} />
+            <Route path="/profile" element={<Profile />} />
           </Route>
 
           <Route element={<ProtectedRoute allowedRoles={['Student']} />}>

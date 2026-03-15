@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { Link, useLocation } from 'react-router-dom';
-import { Home, FolderOpen, FileText, X } from 'lucide-react';
+import { Home, FileText, X, UserCircle } from 'lucide-react';
 
 const Sidebar = ({ isOpen, onClose }) => {
     const { user } = useSelector((state) => state.auth);
@@ -23,6 +23,8 @@ const Sidebar = ({ isOpen, onClose }) => {
     };
 
     const currentNav = navItems[user.role] || [];
+
+    const avatarSrc = user.avatar ? `http://localhost:5001${user.avatar}` : null;
 
     return (
         <>
@@ -47,6 +49,23 @@ const Sidebar = ({ isOpen, onClose }) => {
                     </button>
                 </div>
 
+                {/* User Profile Mini Card */}
+                <Link to="/profile" onClick={() => window.innerWidth < 768 && onClose()} className="block p-4 border-b border-gray-100 hover:bg-slate-50 transition-colors group">
+                    <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-xl bg-[#00244D]/10 text-[#00244D] flex items-center justify-center overflow-hidden">
+                            {avatarSrc ? (
+                                <img src={avatarSrc} alt="Avatar" className="w-full h-full object-cover" />
+                            ) : (
+                                <span className="text-sm font-bold">{user.name?.charAt(0)?.toUpperCase()}</span>
+                            )}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                            <p className="text-sm font-semibold text-slate-800 truncate">{user.name}</p>
+                            <p className="text-xs text-slate-400 truncate">{user.email}</p>
+                        </div>
+                    </div>
+                </Link>
+
                 <nav className="p-4 space-y-2">
                     {currentNav.map((item) => {
                         const isExact = location.pathname === item.path;
@@ -70,6 +89,19 @@ const Sidebar = ({ isOpen, onClose }) => {
                             </Link>
                         )
                     })}
+
+                    {/* Profile Link */}
+                    <Link
+                        to="/profile"
+                        onClick={() => window.innerWidth < 768 && onClose()}
+                        className={`flex items-center px-4 py-3 rounded-lg text-sm font-medium transition-colors ${location.pathname === '/profile'
+                            ? 'bg-[#00244D]/10 text-[#00244D] border-l-3 border-[#E81700]'
+                            : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                            }`}
+                    >
+                        <UserCircle className={`w-5 h-5 mr-3 ${location.pathname === '/profile' ? 'text-[#00244D]' : 'text-gray-400'}`} />
+                        Profile Settings
+                    </Link>
                 </nav>
             </div>
         </>

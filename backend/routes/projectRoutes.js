@@ -6,6 +6,7 @@ import {
     updateProjectStatus,
     uploadFiles,
     joinProject,
+    joinByCode,
     leaveProject,
     manageTeamMember,
     getAvailableProjects
@@ -23,6 +24,9 @@ router.route('/')
 
 router.route('/available')
     .get(protect, authorizeRoles('Student'), getAvailableProjects);
+
+router.route('/join-by-code')
+    .post(protect, authorizeRoles('Student'), joinByCode);
 
 router.route('/:id')
     .get(protect, authorizeProjectAccess, getProjectById);

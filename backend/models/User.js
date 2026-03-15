@@ -20,6 +20,18 @@ const userSchema = new mongoose.Schema(
       enum: ['Student', 'Supervisor', 'Admin'],
       required: true,
     },
+    avatar: {
+      type: String,
+      default: '',
+    },
+    bio: {
+      type: String,
+      default: '',
+    },
+    phone: {
+      type: String,
+      default: '',
+    },
     // For students: their approved supervisor
     supervisor: {
       type: mongoose.Schema.Types.ObjectId,

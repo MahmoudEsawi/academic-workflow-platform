@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { setProjects } from '../redux/projectSlice';
+import { loginSuccess } from '../redux/authSlice';
 import axios from 'axios';
 import StudentWidgets from '../components/StudentWidgets';
 import SupervisorWidgets from '../components/SupervisorWidgets';
@@ -12,16 +13,21 @@ const Dashboard = () => {
     const { user } = useSelector((state) => state.auth);
 
     useEffect(() => {
-        const fetchProjects = async () => {
+        const fetchData = async () => {
             try {
-                const response = await axios.get(import.meta.env.MODE === 'production' ? '/api/auth/me' : 'http://localhost:5001/api/auth/me');
-                dispatch(setProjects(response.data));
+                // Re-fetch user data to get latest supervisor assignment
+                const userRes = await axios.get('http://localhost:5001/api/auth/me');
+                dispatch(loginSuccess(userRes.data));
+
+                // Fetch projects
+                const projectRes = await axios.get('http://localhost:5001/api/projects');
+                dispatch(setProjects(projectRes.data));
             } catch (err) {
-                console.error('Failed to fetch projects', err);
+                console.error('Failed to fetch dashboard data', err);
             }
         };
 
-        fetchProjects();
+        fetchData();
     }, [dispatch]);
 
     return (
