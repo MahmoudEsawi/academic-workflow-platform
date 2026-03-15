@@ -24,7 +24,10 @@ function AppContent() {
       const responseInterceptor = axios.interceptors.response.use(
           (response) => response,
           (error) => {
-              if (error.response && error.response.status === 403) {
+              if (error.response && error.response.status === 401) {
+                  // Session expired or no token — redirect to login
+                  navigate('/login', { replace: true });
+              } else if (error.response && error.response.status === 403) {
                   // If tenant unauthorized or strict role failure, bounce to dashboard
                   navigate('/dashboard', { replace: true });
                   alert("Unauthorized: You do not have permission to view this project.");
