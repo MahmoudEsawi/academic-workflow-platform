@@ -8,6 +8,7 @@ axios.defaults.withCredentials = true;
 import ProtectedRoute from './components/ProtectedRoute';
 import RootRedirect from './components/RootRedirect';
 import Layout from './components/Layout';
+import LandingPage from './pages/LandingPage';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import Dashboard from './pages/Dashboard';
@@ -44,11 +45,10 @@ function AppContent() {
 
   return (
       <Routes>
+        {/* Public Landing Page */}
+        <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
-
-        {/* Root redirect handles users just going to '/' */}
-        <Route path="/" element={<RootRedirect />} />
 
         {/* Dashboards wrapped in Layout (Navbar + Sidebar) */}
         <Route element={<Layout />}>

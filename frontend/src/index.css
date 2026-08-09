@@ -1,52 +1,79 @@
 @import "tailwindcss";
 
 :root {
-  --ttu-navy: #00244D;
-  --ttu-navy-light: #003366;
-  --ttu-navy-dark: #001a38;
-  --ttu-red: #E81700;
-  --ttu-red-hover: #C71400;
-  --ttu-sky: #3498DB;
-  --ttu-sky-light: #5DADE2;
-  --ttu-green: #2E7D32;
-  --ttu-gold: #C8A415;
+  --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-serif: 'Playfair Display', Georgia, Cambria, 'Times New Roman', serif;
+  --font-mono: 'JetBrains Mono', source-code-pro, Menlo, Monaco, Consolas, monospace;
+
+  /* Rich Pine Green & Academic Palette */
+  --pine-primary: #1E3A2F;
+  --pine-primary-dark: #142820;
+  --pine-primary-light: #2D5545;
+  --pine-accent: #3E735E;
+  --pine-soft: #EBF3EE;
+  
+  --canvas-cream: #FAF9F5;
+  --canvas-cream-subtle: #F4F2EC;
+
+  /* Status colors */
+  --status-approved: #10B981;
+  --status-pending: #F59E0B;
+  --status-revision: #3B82F6;
+  --status-rejected: #EF4444;
+}
+
+.font-serif-editorial {
+  font-family: var(--font-serif);
 }
 
 body {
   margin: 0;
-  font-family: 'Alexandria', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #f8fafc;
+  background-color: #FAF9F5;
+  color: #1A2421;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
-}
-
-/* Smooth global transitions */
-*, *::before, *::after {
-  transition-property: color, background-color, border-color, box-shadow;
-  transition-duration: 150ms;
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+code, pre, .font-mono {
+  font-family: var(--font-mono);
 }
 
 /* Custom scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
+  height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #f1f5f9;
+  background: #F4F2EC;
 }
 ::-webkit-scrollbar-thumb {
-  background: #94a3b8;
-  border-radius: 3px;
+  background: #CBD5E1;
+  border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #64748b;
+  background: #94A3B8;
 }
 
-@keyframes slideIn {
+/* Modern Card Utilities */
+.academic-card {
+  background: #FFFFFF;
+  border: 1px solid #E5ECE8;
+  border-radius: 1.5rem;
+  box-shadow: 0 1px 3px 0 rgba(30, 58, 47, 0.03), 0 1px 2px -1px rgba(30, 58, 47, 0.03);
+}
+
+.academic-card-hover {
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.academic-card-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 24px -6px rgba(30, 58, 47, 0.08);
+  border-color: #CBDCD4;
+}
+
+/* Keyframes */
+@keyframes slideInRight {
   from {
     transform: translateX(100%);
     opacity: 0;
@@ -58,6 +85,14 @@ code {
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
+  from { opacity: 0; transform: translateY(6px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-slideIn {
+  animation: slideInRight 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }

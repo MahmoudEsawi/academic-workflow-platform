@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { ArrowLeft, CheckCircle, XCircle, AlertCircle, Send, Code, FileText } from 'lucide-react';
+import { ArrowLeft, CheckCircle2, XCircle, AlertCircle, Code, FileText, ExternalLink, History } from 'lucide-react';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
@@ -34,11 +34,10 @@ const SubmissionReview = () => {
                 status,
                 overallFeedback
             });
-            // Update local state
             const updated = [...submissions];
             updated[selectedSubIndex] = data;
             setSubmissions(updated);
-            alert(`Submission marked as ${status}`);
+            alert(`Deliverable status updated to: ${status}`);
         } catch (err) {
             console.error(err);
             alert('Failed to submit review');
@@ -49,13 +48,13 @@ const SubmissionReview = () => {
 
     if (!submissions.length) {
         return (
-            <div className="max-w-6xl mx-auto py-12 px-6">
-                <button onClick={() => navigate(-1)} className="mb-6 flex items-center text-slate-500 hover:text-slate-800">
-                    <ArrowLeft size={18} className="mr-2" /> Back
+            <div className="max-w-4xl mx-auto py-12 sm:py-16 px-4 text-center">
+                <button onClick={() => navigate(-1)} className="mb-6 inline-flex items-center text-xs font-bold text-[#1E3A2F] bg-white border border-[#E5ECE8] px-3.5 py-2 rounded-full shadow-sm">
+                    <ArrowLeft size={15} className="mr-1.5" /> Back to Project
                 </button>
-                <div className="bg-white border text-center border-slate-200 rounded-2xl p-12">
-                    <h2 className="text-xl font-bold text-slate-800">No Submissions Yet</h2>
-                    <p className="text-slate-500 mt-2">The student has not submitted any work for this task yet.</p>
+                <div className="bg-white border border-[#E5ECE8] rounded-[2rem] p-8 sm:p-12 shadow-sm">
+                    <h2 className="text-lg sm:text-xl font-bold text-[#1E3A2F] mb-2">No Submissions Found</h2>
+                    <p className="text-[#596F65] text-xs">The student has not pushed any code or deliverables for this task yet.</p>
                 </div>
             </div>
         );
@@ -63,110 +62,128 @@ const SubmissionReview = () => {
 
     const currentSub = submissions[selectedSubIndex];
 
+    const statusBadgeStyles = {
+        'Approved': 'bg-emerald-50 text-emerald-800 border-emerald-200',
+        'Rejected': 'bg-rose-50 text-rose-800 border-rose-200',
+        'Needs Revision': 'bg-amber-50 text-amber-800 border-amber-200',
+        'Pending': 'bg-slate-100 text-slate-800 border-slate-200'
+    };
+
     return (
-        <div className="max-w-7xl mx-auto pb-12">
-            <div className="flex items-center gap-4 mb-6">
+        <div className="max-w-7xl mx-auto space-y-6 pb-12">
+            {/* Top Bar */}
+            <div className="flex items-center gap-3 sm:gap-4">
                 <button
                     onClick={() => navigate(-1)}
-                    className="p-2 hover:bg-slate-100 rounded-lg transition-colors text-slate-500"
+                    className="p-2 sm:p-2.5 bg-white border border-[#E5ECE8] hover:bg-[#FAF9F5] rounded-2xl text-[#1E3A2F] transition-all shadow-sm shrink-0"
                 >
-                    <ArrowLeft size={20} />
+                    <ArrowLeft size={16} className="sm:w-[18px] sm:h-[18px]" />
                 </button>
-                <div>
-                    <h1 className="text-2xl font-bold text-slate-800">Review Submission</h1>
-                    <p className="text-sm text-slate-500">Student: {currentSub.student?.name} ({currentSub.student?.email})</p>
+                <div className="min-w-0 flex-1">
+                    <h1 className="text-xl sm:text-2xl font-extrabold text-[#1E3A2F] tracking-tight truncate">
+                        Deliverable Review Console
+                    </h1>
+                    <p className="text-[11px] sm:text-xs text-[#596F65] truncate">
+                        Student: <strong className="text-[#1E3A2F]">{currentSub.student?.name}</strong> ({currentSub.student?.email})
+                    </p>
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-                {/* Main Content Area */}
+            <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+                {/* Main Code & Review Area */}
                 <div className="lg:col-span-3 space-y-6">
                     {/* View Portal */}
-                    <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden flex flex-col h-[600px]">
-                        <div className="px-6 py-4 bg-slate-50 border-b border-slate-200 flex justify-between items-center">
-                            <h3 className="font-bold text-slate-700 flex items-center gap-2">
-                                {currentSub.content ? <Code size={18} className="text-[#3498DB]" /> : <FileText size={18} className="text-blue-500" />}
-                                Version {currentSub.version} - {currentSub.content ? 'Source Code' : 'Document Reference'}
+                    <div className="bg-white rounded-[1.75rem] sm:rounded-[2rem] shadow-sm border border-[#E5ECE8] overflow-hidden flex flex-col h-[420px] sm:h-[540px]">
+                        <div className="px-4 sm:px-6 py-3.5 bg-[#FAF9F5] border-b border-[#E5ECE8] flex justify-between items-center flex-wrap gap-2">
+                            <h3 className="font-bold text-[#1E3A2F] text-xs flex items-center gap-2 truncate max-w-[260px] sm:max-w-none">
+                                {currentSub.content ? <Code size={15} className="text-[#3E735E] shrink-0" /> : <FileText size={15} className="text-[#1E3A2F] shrink-0" />}
+                                <span className="truncate">Version {currentSub.version} — {currentSub.content ? `Code (${currentSub.language || 'js'})` : 'Document Reference'}</span>
                             </h3>
-                            <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${currentSub.status === 'Approved' ? 'bg-emerald-100 text-emerald-800' :
-                                    currentSub.status === 'Needs Revision' ? 'bg-amber-100 text-amber-800' :
-                                        currentSub.status === 'Rejected' ? 'bg-red-100 text-red-800' :
-                                            'bg-slate-200 text-slate-800'
-                                }`}>
+                            <span className={`text-[10px] sm:text-[11px] font-bold px-2.5 py-0.5 rounded-full border shrink-0 ${statusBadgeStyles[currentSub.status] || statusBadgeStyles.Pending}`}>
                                 {currentSub.status}
                             </span>
                         </div>
-                        <div className="flex-1 overflow-auto bg-slate-100 p-0 m-0">
+
+                        <div className="flex-1 overflow-auto bg-[#142820] p-0 m-0">
                             {currentSub.content ? (
                                 <SyntaxHighlighter
                                     language={currentSub.language || 'javascript'}
                                     style={vscDarkPlus}
-                                    customStyle={{ margin: 0, minHeight: '100%', borderRadius: 0, padding: '1.5rem' }}
+                                    customStyle={{ margin: 0, minHeight: '100%', background: '#142820', padding: '1rem', fontSize: '0.8rem' }}
                                     showLineNumbers={true}
                                 >
                                     {currentSub.content}
                                 </SyntaxHighlighter>
                             ) : (
-                                <div className="p-8 h-full flex items-center justify-center flex-col gap-4 text-center">
-                                    <FileText size={48} className="text-slate-400" />
+                                <div className="p-6 sm:p-8 h-full flex items-center justify-center flex-col gap-4 text-center bg-[#FAF9F5]">
+                                    <div className="w-14 h-14 rounded-2xl bg-[#EBF3EE] text-[#1E3A2F] flex items-center justify-center">
+                                        <FileText size={28} />
+                                    </div>
                                     <div>
-                                        <p className="font-medium text-slate-800">File Attachment URL:</p>
-                                        <a href={currentSub.fileUrl} target="_blank" rel="noreferrer" className="text-[#00244D] hover:underline mt-1 break-all">
-                                            {currentSub.fileUrl}
+                                        <p className="text-xs sm:text-sm font-bold text-[#1E3A2F]">Attached External Document:</p>
+                                        <a
+                                            href={currentSub.fileUrl}
+                                            target="_blank"
+                                            rel="noreferrer"
+                                            className="inline-flex items-center gap-1.5 text-xs font-bold text-[#1E3A2F] hover:underline mt-2 bg-white px-4 py-2 rounded-xl border border-[#D5DDD8] break-all shadow-sm"
+                                        >
+                                            <span>Open Deliverable Link</span>
+                                            <ExternalLink size={13} />
                                         </a>
                                     </div>
-                                    <p className="text-sm text-slate-500 max-w-md mt-4">
-                                        Note: Click the link above to view external documents. For security, we do not inline external iFrames.
-                                    </p>
                                 </div>
                             )}
                         </div>
                     </div>
 
-                    {/* Review Action Box */}
-                    <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
-                        <h3 className="font-bold text-slate-800 mb-4">Provide Supervisor Feedback</h3>
+                    {/* Supervisor Feedback & Verdict */}
+                    <div className="bg-white rounded-[1.75rem] sm:rounded-[2rem] shadow-sm border border-[#E5ECE8] p-5 sm:p-6 space-y-4">
+                        <h3 className="font-bold text-[#1E3A2F] text-xs sm:text-sm">Supervisor Evaluation & Feedback</h3>
 
-                        <div className="mb-4">
-                            <textarea
-                                rows={4}
-                                placeholder="Write your feedback for this version here..."
-                                value={overallFeedback || currentSub.overallFeedback || ''}
-                                onChange={(e) => setOverallFeedback(e.target.value)}
-                                className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none resize-y"
-                            />
-                        </div>
+                        <textarea
+                            rows={3}
+                            placeholder="Write structured guidance, corrections, or notes for the student..."
+                            value={overallFeedback || currentSub.overallFeedback || ''}
+                            onChange={(e) => setOverallFeedback(e.target.value)}
+                            className="w-full px-3.5 sm:px-4 py-2.5 sm:py-3 bg-[#FAF9F5] border border-[#D5DDD8] rounded-2xl text-xs text-[#1A2421] placeholder-slate-400 focus:outline-none focus:border-[#1E3A2F] transition-all resize-none"
+                        />
 
-                        <div className="flex flex-wrap gap-3">
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 sm:gap-3">
                             <button
                                 onClick={() => handleReviewSubmit('Approved')}
                                 disabled={isSubmitting}
-                                className="flex items-center gap-2 px-5 py-2.5 bg-emerald-600 text-white font-medium rounded-lg hover:bg-emerald-700 transition flex-1 justify-center disabled:opacity-50"
+                                className="flex items-center justify-center gap-2 px-4 py-2.5 bg-[#1E3A2F] hover:bg-[#142820] text-white text-xs font-bold rounded-full shadow-md transition-all disabled:opacity-50"
                             >
-                                <CheckCircle size={18} /> Approve Fixes
+                                <CheckCircle2 size={15} />
+                                <span>Approve</span>
                             </button>
                             <button
                                 onClick={() => handleReviewSubmit('Needs Revision')}
                                 disabled={isSubmitting}
-                                className="flex items-center gap-2 px-5 py-2.5 bg-amber-500 text-white font-medium rounded-lg hover:bg-amber-600 transition flex-1 justify-center disabled:opacity-50"
+                                className="flex items-center justify-center gap-2 px-4 py-2.5 bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200 text-xs font-bold rounded-full transition-all disabled:opacity-50"
                             >
-                                <AlertCircle size={18} /> Request Edits
+                                <AlertCircle size={15} />
+                                <span>Request Revisions</span>
                             </button>
                             <button
                                 onClick={() => handleReviewSubmit('Rejected')}
                                 disabled={isSubmitting}
-                                className="flex items-center gap-2 px-5 py-2.5 bg-slate-200 text-slate-700 font-medium rounded-lg hover:bg-slate-300 transition flex-1 justify-center disabled:opacity-50"
+                                className="flex items-center justify-center gap-2 px-4 py-2.5 bg-rose-50 hover:bg-rose-100 text-rose-800 border border-rose-200 text-xs font-bold rounded-full transition-all disabled:opacity-50"
                             >
-                                <XCircle size={18} /> Reject Version
+                                <XCircle size={15} />
+                                <span>Reject</span>
                             </button>
                         </div>
                     </div>
                 </div>
 
                 {/* Sidebar: Submissions Versions */}
-                <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 self-start max-h-[800px] overflow-y-auto">
-                    <h3 className="font-bold text-slate-800 mb-4">Version History</h3>
-                    <div className="space-y-3">
+                <div className="bg-white rounded-[1.75rem] sm:rounded-[2rem] shadow-sm border border-[#E5ECE8] p-4 sm:p-5 self-start space-y-3 w-full">
+                    <h3 className="font-bold text-[#1E3A2F] text-xs sm:text-sm flex items-center gap-2 pb-2 border-b border-[#F0EFEA]">
+                        <History size={15} className="text-[#3E735E]" />
+                        Submission Versions
+                    </h3>
+                    <div className="space-y-2">
                         {submissions.map((sub, idx) => (
                             <button
                                 key={sub._id}
@@ -174,29 +191,24 @@ const SubmissionReview = () => {
                                     setSelectedSubIndex(idx);
                                     setOverallFeedback(sub.overallFeedback || '');
                                 }}
-                                className={`w-full text-left p-4 rounded-xl border transition-all ${idx === selectedSubIndex
-                                        ? 'border-[#00244D] bg-[#00244D]/10 ring-1 ring-[#00244D]'
-                                        : 'border-slate-200 hover:border-[#3498DB] bg-white'
-                                    }`}
+                                className={`w-full text-left p-3 rounded-2xl border transition-all ${
+                                    idx === selectedSubIndex
+                                        ? 'border-[#1E3A2F] bg-[#EBF3EE] ring-1 ring-[#1E3A2F]/20'
+                                        : 'border-[#E5ECE8] hover:border-[#CBDCD4] bg-[#FAF9F5]'
+                                }`}
                             >
                                 <div className="flex justify-between items-center mb-1">
-                                    <span className={`font-bold ${idx === selectedSubIndex ? 'text-[#00244D]' : 'text-slate-700'}`}>
+                                    <span className="font-bold text-[11px] sm:text-xs text-[#1E3A2F]">
                                         Version {sub.version} {idx === 0 ? '(Latest)' : ''}
                                     </span>
-                                </div>
-                                <p className="text-xs text-slate-500 mb-2 truncate" title={sub.description}>{sub.description}</p>
-                                <div className="flex justify-between items-end">
-                                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider ${sub.status === 'Approved' ? 'bg-emerald-100 text-emerald-800' :
-                                            sub.status === 'Needs Revision' ? 'bg-amber-100 text-amber-800' :
-                                                sub.status === 'Rejected' ? 'bg-red-100 text-red-800' :
-                                                    'bg-slate-200 text-slate-800'
-                                        }`}>
+                                    <span className={`text-[8px] sm:text-[9px] font-bold px-2 py-0.5 rounded-full border ${statusBadgeStyles[sub.status] || statusBadgeStyles.Pending}`}>
                                         {sub.status}
                                     </span>
-                                    <span className="text-[10px] text-slate-400">
-                                        {new Date(sub.createdAt).toLocaleDateString()}
-                                    </span>
                                 </div>
+                                <p className="text-[11px] text-[#596F65] truncate mb-1">{sub.description}</p>
+                                <span className="text-[9px] text-[#6B7F76] block font-mono">
+                                    {new Date(sub.createdAt).toLocaleDateString()}
+                                </span>
                             </button>
                         ))}
                     </div>

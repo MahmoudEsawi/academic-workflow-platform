@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { loginSuccess } from '../redux/authSlice';
 import axios from 'axios';
-import { Camera, Save, Lock, User, Mail, Phone, FileText, Shield, CheckCircle, AlertCircle } from 'lucide-react';
+import { Camera, Save, Lock, User, Mail, Phone, FileText, Shield, CheckCircle2, AlertCircle } from 'lucide-react';
 
 const Profile = () => {
     const { user } = useSelector((state) => state.auth);
@@ -17,7 +17,7 @@ const Profile = () => {
     const [changingPw, setChangingPw] = useState(false);
     const [avatarPreview, setAvatarPreview] = useState(null);
     const [avatarFile, setAvatarFile] = useState(null);
-    const [stats, setStats] = useState({ projects: 0, tasks: 0 });
+    const [stats, setStats] = useState({ projects: 0 });
 
     useEffect(() => {
         const fetchProfile = async () => {
@@ -31,7 +31,7 @@ const Profile = () => {
         const fetchStats = async () => {
             try {
                 const { data } = await axios.get('http://localhost:5001/api/projects');
-                setStats({ projects: data.length, tasks: 0 });
+                setStats({ projects: data.length });
             } catch (err) {
                 console.error(err);
             }
@@ -103,158 +103,212 @@ const Profile = () => {
     const avatarSrc = avatarPreview || (profile.avatar ? `http://localhost:5001${profile.avatar}` : null);
 
     return (
-        <div className="max-w-4xl mx-auto space-y-8">
+        <div className="max-w-4xl mx-auto space-y-6 sm:space-y-8 pb-12">
             <header>
-                <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">Profile Settings</h1>
-                <p className="mt-2 text-sm text-slate-500 font-medium">Manage your personal information and security.</p>
+                <h1 className="text-2xl sm:text-3xl font-extrabold text-[#1E3A2F] tracking-tight">Account & Security</h1>
+                <p className="mt-1 text-xs sm:text-sm text-[#596F65]">Manage your profile credentials and security settings.</p>
             </header>
 
-            {/* Avatar & Info Card */}
-            <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-                <div className="bg-gradient-to-r from-[#00244D] to-[#003366] h-28 relative">
-                    <div className="absolute -bottom-12 left-8">
+            {/* Avatar & Profile Banner */}
+            <div className="bg-white rounded-[2rem] sm:rounded-[2.5rem] shadow-sm border border-[#E5ECE8] overflow-hidden">
+                <div className="bg-[#1E3A2F] h-28 sm:h-32 relative">
+                    <div className="absolute -bottom-10 sm:-bottom-12 left-5 sm:left-8">
                         <div className="relative group">
-                            <div className="w-24 h-24 rounded-2xl border-4 border-white shadow-lg bg-slate-200 overflow-hidden flex items-center justify-center">
+                            <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl border-4 border-white shadow-xl bg-[#FAF9F5] overflow-hidden flex items-center justify-center">
                                 {avatarSrc ? (
                                     <img src={avatarSrc} alt="Avatar" className="w-full h-full object-cover" />
                                 ) : (
-                                    <span className="text-3xl font-bold text-[#00244D]">
+                                    <span className="text-2xl sm:text-3xl font-extrabold text-[#1E3A2F]">
                                         {user?.name?.charAt(0)?.toUpperCase()}
                                     </span>
                                 )}
                             </div>
                             <button
                                 onClick={() => fileInputRef.current?.click()}
-                                className="absolute bottom-0 right-0 w-8 h-8 bg-[#E81700] text-white rounded-lg flex items-center justify-center shadow-md hover:bg-[#C71400] transition-colors"
+                                className="absolute bottom-0 right-0 w-7 h-7 sm:w-8 sm:h-8 bg-[#1E3A2F] hover:bg-[#142820] text-white rounded-xl flex items-center justify-center shadow-lg transition-colors border-2 border-white"
+                                title="Change avatar"
                             >
-                                <Camera size={14} />
+                                <Camera size={13} className="sm:w-3.5 sm:h-3.5" />
                             </button>
                             <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleAvatarChange} />
                         </div>
                     </div>
                 </div>
-                <div className="pt-16 pb-6 px-8">
-                    <div className="flex flex-wrap items-center gap-4">
+
+                <div className="pt-14 sm:pt-16 pb-6 px-5 sm:px-8">
+                    <div className="flex flex-wrap items-center justify-between gap-3">
                         <div>
-                            <h2 className="text-xl font-bold text-slate-900">{user?.name}</h2>
-                            <p className="text-sm text-slate-500">{user?.email}</p>
+                            <h2 className="text-lg sm:text-xl font-bold text-[#1E3A2F]">{user?.name}</h2>
+                            <p className="text-xs text-[#6B7F76]">{user?.email}</p>
                         </div>
-                        <span className="ml-auto text-xs font-semibold bg-[#00244D]/10 text-[#00244D] px-3 py-1 rounded-full flex items-center gap-1.5">
-                            <Shield size={12} /> {user?.role}
+                        <span className="text-[10px] sm:text-xs font-bold bg-[#EBF3EE] text-[#1E3A2F] border border-[#D1E7DD] px-3 py-1 rounded-full flex items-center gap-1.5">
+                            <Shield size={12} /> {user?.role} Access
                         </span>
                     </div>
+
                     {/* Quick Stats */}
-                    <div className="mt-6 grid grid-cols-2 sm:grid-cols-3 gap-4">
-                        <div className="bg-slate-50 rounded-xl p-4 text-center">
-                            <p className="text-2xl font-bold text-[#00244D]">{stats.projects}</p>
-                            <p className="text-xs text-slate-500 font-medium mt-1">Projects</p>
+                    <div className="mt-5 sm:mt-6 grid grid-cols-3 gap-2.5 sm:gap-4">
+                        <div className="bg-[#FAF9F5] rounded-2xl p-3 sm:p-4 text-center border border-[#E5ECE8]">
+                            <p className="text-lg sm:text-2xl font-extrabold text-[#1E3A2F]">{stats.projects}</p>
+                            <p className="text-[9px] sm:text-[11px] text-[#6B7F76] font-semibold uppercase tracking-wider mt-0.5">Projects</p>
                         </div>
-                        <div className="bg-slate-50 rounded-xl p-4 text-center">
-                            <p className="text-2xl font-bold text-[#3498DB]">{user?.role}</p>
-                            <p className="text-xs text-slate-500 font-medium mt-1">Role</p>
+                        <div className="bg-[#FAF9F5] rounded-2xl p-3 sm:p-4 text-center border border-[#E5ECE8]">
+                            <p className="text-lg sm:text-2xl font-extrabold text-[#3E735E] truncate">{user?.role}</p>
+                            <p className="text-[9px] sm:text-[11px] text-[#6B7F76] font-semibold uppercase tracking-wider mt-0.5">Role</p>
                         </div>
-                        <div className="bg-slate-50 rounded-xl p-4 text-center">
-                            <p className="text-2xl font-bold text-[#2E7D32]">Active</p>
-                            <p className="text-xs text-slate-500 font-medium mt-1">Status</p>
+                        <div className="bg-[#FAF9F5] rounded-2xl p-3 sm:p-4 text-center border border-[#E5ECE8]">
+                            <p className="text-lg sm:text-2xl font-extrabold text-emerald-800">Active</p>
+                            <p className="text-[9px] sm:text-[11px] text-[#6B7F76] font-semibold uppercase tracking-wider mt-0.5">Status</p>
                         </div>
                     </div>
                 </div>
             </div>
 
             {/* Profile Form */}
-            <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-8">
-                <h3 className="text-lg font-bold text-slate-900 mb-6 flex items-center gap-2">
-                    <User size={20} className="text-[#3498DB]" /> Personal Information
+            <div className="bg-white rounded-[2rem] sm:rounded-[2.5rem] shadow-sm border border-[#E5ECE8] p-5 sm:p-8 space-y-5 sm:space-y-6">
+                <h3 className="text-sm sm:text-base font-bold text-[#1E3A2F] flex items-center gap-2">
+                    <User size={16} className="text-[#3E735E]" />
+                    Personal Information
                 </h3>
+
                 {profileMsg.text && (
-                    <div className={`mb-6 p-4 rounded-xl flex items-start gap-3 ${profileMsg.type === 'success' ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'}`}>
-                        {profileMsg.type === 'success' ? <CheckCircle size={18} /> : <AlertCircle size={18} />}
-                        <p className="text-sm font-medium">{profileMsg.text}</p>
+                    <div className={`p-3.5 sm:p-4 rounded-2xl flex items-start gap-2.5 border ${profileMsg.type === 'success' ? 'bg-emerald-50 border-emerald-200 text-emerald-800' : 'bg-rose-50 border-rose-200 text-rose-800'}`}>
+                        {profileMsg.type === 'success' ? <CheckCircle2 size={16} className="shrink-0 mt-0.5" /> : <AlertCircle size={16} className="shrink-0 mt-0.5" />}
+                        <p className="text-xs font-semibold">{profileMsg.text}</p>
                     </div>
                 )}
-                <form onSubmit={handleSaveProfile} className="space-y-5">
-                    <div className="grid sm:grid-cols-2 gap-5">
+
+                <form onSubmit={handleSaveProfile} className="space-y-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
-                            <label className="block text-sm font-semibold text-[#00244D] mb-1.5">Full Name</label>
+                            <label className="block text-[11px] sm:text-xs font-bold uppercase tracking-wider text-[#1E3A2F] mb-1.5">Full Name</label>
                             <div className="relative">
-                                <User size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-                                <input type="text" value={profile.name} onChange={(e) => setProfile({...profile, name: e.target.value})}
-                                    className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#00244D]/20 focus:border-[#00244D] text-sm" />
+                                <User size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                                <input
+                                    type="text"
+                                    value={profile.name}
+                                    onChange={(e) => setProfile({...profile, name: e.target.value})}
+                                    className="w-full pl-9 pr-3.5 py-2.5 bg-[#FAF9F5] border border-[#D5DDD8] rounded-xl text-xs text-[#1A2421] focus:outline-none focus:border-[#1E3A2F]"
+                                />
                             </div>
                         </div>
                         <div>
-                            <label className="block text-sm font-semibold text-[#00244D] mb-1.5">Email</label>
+                            <label className="block text-[11px] sm:text-xs font-bold uppercase tracking-wider text-[#1E3A2F] mb-1.5">Email Address</label>
                             <div className="relative">
-                                <Mail size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-                                <input type="email" value={user?.email} disabled
-                                    className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl bg-gray-50 text-gray-500 text-sm cursor-not-allowed" />
+                                <Mail size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                                <input
+                                    type="email"
+                                    value={user?.email}
+                                    disabled
+                                    className="w-full pl-9 pr-3.5 py-2.5 bg-[#F4F2EC] border border-[#E5ECE8] rounded-xl text-xs text-[#6B7F76] cursor-not-allowed"
+                                />
                             </div>
                         </div>
                     </div>
+
                     <div>
-                        <label className="block text-sm font-semibold text-[#00244D] mb-1.5">Phone</label>
+                        <label className="block text-[11px] sm:text-xs font-bold uppercase tracking-wider text-[#1E3A2F] mb-1.5">Contact Phone</label>
                         <div className="relative">
-                            <Phone size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-                            <input type="tel" value={profile.phone} onChange={(e) => setProfile({...profile, phone: e.target.value})}
-                                placeholder="+962 xxxxxxxx"
-                                className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#00244D]/20 focus:border-[#00244D] text-sm" />
+                            <Phone size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                            <input
+                                type="tel"
+                                value={profile.phone}
+                                onChange={(e) => setProfile({...profile, phone: e.target.value})}
+                                placeholder="+1 (555) 000-0000"
+                                className="w-full pl-9 pr-3.5 py-2.5 bg-[#FAF9F5] border border-[#D5DDD8] rounded-xl text-xs text-[#1A2421] focus:outline-none focus:border-[#1E3A2F]"
+                            />
                         </div>
                     </div>
+
                     <div>
-                        <label className="block text-sm font-semibold text-[#00244D] mb-1.5">Bio</label>
+                        <label className="block text-[11px] sm:text-xs font-bold uppercase tracking-wider text-[#1E3A2F] mb-1.5">Academic Bio / Interests</label>
                         <div className="relative">
-                            <FileText size={16} className="absolute left-3 top-3 text-gray-400" />
-                            <textarea value={profile.bio} onChange={(e) => setProfile({...profile, bio: e.target.value})}
-                                placeholder="Tell us a little about yourself..."
+                            <FileText size={15} className="absolute left-3.5 top-3 text-slate-400" />
+                            <textarea
+                                value={profile.bio}
+                                onChange={(e) => setProfile({...profile, bio: e.target.value})}
+                                placeholder="Share your academic interests or research focus..."
                                 rows="3"
-                                className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#00244D]/20 focus:border-[#00244D] text-sm resize-none" />
+                                className="w-full pl-9 pr-3.5 py-2.5 bg-[#FAF9F5] border border-[#D5DDD8] rounded-xl text-xs text-[#1A2421] focus:outline-none focus:border-[#1E3A2F] resize-none"
+                            />
                         </div>
                     </div>
-                    <button type="submit" disabled={saving}
-                        className="flex items-center gap-2 bg-[#E81700] hover:bg-[#C71400] text-white font-semibold py-2.5 px-6 rounded-xl shadow-lg shadow-red-500/20 transition-all text-sm disabled:opacity-50">
-                        <Save size={16} /> {saving ? 'Saving...' : 'Save Changes'}
+
+                    <button
+                        type="submit"
+                        disabled={saving}
+                        className="w-full sm:w-auto flex items-center justify-center gap-2 bg-[#1E3A2F] hover:bg-[#142820] text-white font-bold py-2.5 px-6 rounded-full shadow-md transition-all text-xs disabled:opacity-50"
+                    >
+                        <Save size={14} />
+                        <span>{saving ? 'Saving...' : 'Save Profile'}</span>
                     </button>
                 </form>
             </div>
 
             {/* Password Change */}
-            <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-8">
-                <h3 className="text-lg font-bold text-slate-900 mb-6 flex items-center gap-2">
-                    <Lock size={20} className="text-[#E81700]" /> Change Password
+            <div className="bg-white rounded-[2rem] sm:rounded-[2.5rem] shadow-sm border border-[#E5ECE8] p-5 sm:p-8 space-y-5 sm:space-y-6">
+                <h3 className="text-sm sm:text-base font-bold text-[#1E3A2F] flex items-center gap-2">
+                    <Lock size={16} className="text-[#3E735E]" />
+                    Change Account Password
                 </h3>
+
                 {passwordMsg.text && (
-                    <div className={`mb-6 p-4 rounded-xl flex items-start gap-3 ${passwordMsg.type === 'success' ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'}`}>
-                        {passwordMsg.type === 'success' ? <CheckCircle size={18} /> : <AlertCircle size={18} />}
-                        <p className="text-sm font-medium">{passwordMsg.text}</p>
+                    <div className={`p-3.5 sm:p-4 rounded-2xl flex items-start gap-2.5 border ${passwordMsg.type === 'success' ? 'bg-emerald-50 border-emerald-200 text-emerald-800' : 'bg-rose-50 border-rose-200 text-rose-800'}`}>
+                        {passwordMsg.type === 'success' ? <CheckCircle2 size={16} className="shrink-0 mt-0.5" /> : <AlertCircle size={16} className="shrink-0 mt-0.5" />}
+                        <p className="text-xs font-semibold">{passwordMsg.text}</p>
                     </div>
                 )}
-                <form onSubmit={handleChangePassword} className="space-y-5">
+
+                <form onSubmit={handleChangePassword} className="space-y-4">
                     <div>
-                        <label className="block text-sm font-semibold text-[#00244D] mb-1.5">Current Password</label>
+                        <label className="block text-[11px] sm:text-xs font-bold uppercase tracking-wider text-[#1E3A2F] mb-1.5">Current Password</label>
                         <div className="relative">
-                            <Lock size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-                            <input type="password" value={passwords.currentPassword} onChange={(e) => setPasswords({...passwords, currentPassword: e.target.value})}
-                                required placeholder="••••••••"
-                                className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#00244D]/20 focus:border-[#00244D] text-sm" />
+                            <Lock size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                            <input
+                                type="password"
+                                value={passwords.currentPassword}
+                                onChange={(e) => setPasswords({...passwords, currentPassword: e.target.value})}
+                                required
+                                placeholder="••••••••"
+                                className="w-full pl-9 pr-3.5 py-2.5 bg-[#FAF9F5] border border-[#D5DDD8] rounded-xl text-xs text-[#1A2421] focus:outline-none focus:border-[#1E3A2F]"
+                            />
                         </div>
                     </div>
-                    <div className="grid sm:grid-cols-2 gap-5">
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
-                            <label className="block text-sm font-semibold text-[#00244D] mb-1.5">New Password</label>
-                            <input type="password" value={passwords.newPassword} onChange={(e) => setPasswords({...passwords, newPassword: e.target.value})}
-                                required minLength="6" placeholder="••••••••"
-                                className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#00244D]/20 focus:border-[#00244D] text-sm" />
+                            <label className="block text-[11px] sm:text-xs font-bold uppercase tracking-wider text-[#1E3A2F] mb-1.5">New Password</label>
+                            <input
+                                type="password"
+                                value={passwords.newPassword}
+                                onChange={(e) => setPasswords({...passwords, newPassword: e.target.value})}
+                                required
+                                minLength="6"
+                                placeholder="••••••••"
+                                className="w-full px-3.5 py-2.5 bg-[#FAF9F5] border border-[#D5DDD8] rounded-xl text-xs text-[#1A2421] focus:outline-none focus:border-[#1E3A2F]"
+                            />
                         </div>
                         <div>
-                            <label className="block text-sm font-semibold text-[#00244D] mb-1.5">Confirm New Password</label>
-                            <input type="password" value={passwords.confirmPassword} onChange={(e) => setPasswords({...passwords, confirmPassword: e.target.value})}
-                                required minLength="6" placeholder="••••••••"
-                                className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#00244D]/20 focus:border-[#00244D] text-sm" />
+                            <label className="block text-[11px] sm:text-xs font-bold uppercase tracking-wider text-[#1E3A2F] mb-1.5">Confirm New Password</label>
+                            <input
+                                type="password"
+                                value={passwords.confirmPassword}
+                                onChange={(e) => setPasswords({...passwords, confirmPassword: e.target.value})}
+                                required
+                                minLength="6"
+                                placeholder="••••••••"
+                                className="w-full px-3.5 py-2.5 bg-[#FAF9F5] border border-[#D5DDD8] rounded-xl text-xs text-[#1A2421] focus:outline-none focus:border-[#1E3A2F]"
+                            />
                         </div>
                     </div>
-                    <button type="submit" disabled={changingPw}
-                        className="flex items-center gap-2 bg-[#00244D] hover:bg-[#003366] text-white font-semibold py-2.5 px-6 rounded-xl shadow-lg shadow-[#00244D]/20 transition-all text-sm disabled:opacity-50">
-                        <Lock size={16} /> {changingPw ? 'Changing...' : 'Change Password'}
+
+                    <button
+                        type="submit"
+                        disabled={changingPw}
+                        className="w-full sm:w-auto flex items-center justify-center gap-2 bg-[#FAF9F5] hover:bg-[#F4F2EC] border border-[#D5DDD8] text-[#1E3A2F] font-bold py-2.5 px-6 rounded-full transition-all text-xs disabled:opacity-50"
+                    >
+                        <Lock size={14} />
+                        <span>{changingPw ? 'Updating...' : 'Update Password'}</span>
                     </button>
                 </form>
             </div>
